@@ -1,7 +1,12 @@
 import logging
+import os
+from datetime import datetime
 from colorlog import ColoredFormatter
 from playsound import playsound
-from utilities.src.utils import *
+
+
+def root_path(path):
+    return os.path.join(os.path.dirname(os.path.dirname(__file__)), path)
 
 
 class Logger:

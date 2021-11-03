@@ -1,8 +1,7 @@
 import logging
 from colorlog import ColoredFormatter
-from datetime import datetime
 from playsound import playsound
-from _utils.utils import *
+from utilities.src.utils import *
 
 
 class Logger:

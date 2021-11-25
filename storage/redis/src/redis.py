@@ -72,6 +72,15 @@ class Redis:
             id
         )
 
+    def check_hash_set_record(self, hash_set_name, id):
+        """
+        check if an id exists in hash-set or not.
+        :param hash_set_name: the name of redis hash set
+        :param id: id in the hash set that we want to check it
+        :return:
+        """
+        return self.redis_connection.hexists(hash_set_name, id)
+
     def get_hash_set_record(self, hash_set_name, id):
         """
 

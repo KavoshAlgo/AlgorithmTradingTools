@@ -113,9 +113,7 @@ class Redis:
         :return: all of the hash set content
         """
         temp = self.redis_connection.hgetall(hash_set_name)
-        temp_dic = {}
-        for key, value in temp.items():
-            temp_dic[json.loads(key)] = json.loads(value)
+        temp_dic = {json.loads(key): json.loads(value) for key, value in temp.items()}
         if temp:
             return temp_dic
         else:

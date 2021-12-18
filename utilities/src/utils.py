@@ -1,10 +1,9 @@
-
 import requests
 from datetime import datetime
 import os
 import jdatetime
 from PIL import Image
-
+import time
 
 def check_finish_programm_time(finish_time):
     finish_time = finish_time.split(':')
@@ -147,3 +146,13 @@ def renew_tor_ip():
 def chunks(lst, n):
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
+
+
+def date_time_into_timestamp(date_time):
+    """
+    converting nobitex date time into Timestamp datatype
+    :param date_time: incoming datetime from Nobitex
+    :return:
+    """
+    date_time = date_time.split('.')[0]
+    return time.mktime(datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S").timetuple())

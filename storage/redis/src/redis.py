@@ -7,8 +7,121 @@ class Redis:
         self.redis_connection = redis.Redis(
             host=host,
             port=port,
-            password=password
-        )
+            password=password)
+
+    def insert_sorted_set_record(self, sorted_set_name, dicti):
+        """
+        insert a new record into a redis sorted set.
+        :param sorted_set_name: name of the redis sorted set
+        :param dict: format:{name:score}
+        :return: returns the cardinality of the named sorted set
+        """
+        self.redis_connection.zadd(name=sorted_set_name, mapping=dicti)
+        return self.redis_connection.zcard(sorted_set_name)
+
+    def get_all_sorted_set_record(self, sorted_set_name, desc=True):
+        """
+        get the sorted set in an ascending order or in an descending order
+        :param sorted_set_name: name of the redis sorted set
+        :param desc: flag for the order type
+        :return: list of keys in byte string format or None
+        """
+        temp = self.redis_connection.zrange(sorted_set_name, 0, -1, desc=desc)
+
+        if temp:
+            return temp
+        else:
+            return None
+
+    def get_ranged_sorted_set_count(self, sorted_set_name, mini, maxi):
+        """
+        get the sorted set in a specified range
+        :param sorted_set_name: name of the redis sorted set
+        :param mini: minimum of the range
+        :param maxi: maximum of the range
+        :return: item count or 0 for not found
+        """
+        temp = self.redis_connection.zcount(sorted_set_name, mini, maxi)
+
+        if temp:
+            return temp
+        else:
+            return 0
+
+    def get_sorted_set_score_record(self, sorted_set_name, key):
+        """
+        get the score of a record in the sorted set
+        :param sorted_set_name: name of the redis sorted set
+        :param key: name of the record
+        :return: score of the requested record or None
+        """
+        temp = self.redis_connection.zscore(sorted_set_name, key)
+
+        if temp:
+            return temp
+        else:
+            return None
+
+    def get_ranged_sorted_set_score(self, sorted_set_name, mini, maxi, withscores=True):
+        """
+        get the records in a specified range with their scores
+        :param sorted_set_name: name of the redis sorted set
+        :param mini: minimum of the range
+        :param maxi: maximum of the range
+        :param withscores: flag for showing the scores or not
+        :return: list of keys with their scores or None
+        """
+        temp = self.redis_connection.zrangebyscore(sorted_set_name, min=mini, max=maxi, withscores=withscores)
+
+        if temp:
+            return temp
+        else:
+            return None
+
+    def get_ranged_sorted_set_score_reversed(self, sorted_set_name, mini, maxi, withscores=True):
+        """
+        get the records in a specified range with their scores reversed
+        :param sorted_set_name: name of the redis sorted set
+        :param mini: minimum of the range
+        :param maxi: maximum of the range
+        :param withscores: flag for showing the scores or not
+        :return: list of keys with their scores or None
+        """
+        temp = self.redis_connection.zrevrangebyscore(sorted_set_name, min=mini, max=maxi, withscores=withscores)
+
+        if temp:
+            return temp
+        else:
+            return None
+
+    def remove_sorted_set_record_by_key(self, sorted_set_name, *value):
+        """
+        remove record(s) by its/their key
+        :param sorted_set_name: name of the redis sorted set
+        :param value: keys to be removed
+        :return: count of the removed items or None
+        """
+        temp = self.redis_connection.zrem(sorted_set_name, *value)
+
+        if temp:
+            return temp
+        else:
+            return None
+
+    def remove_sorted_set_record_by_ranged_score(self, sorted_set_name, mini, maxi):
+        """
+        remove record(s) by its/their scores in a specified range
+        :param sorted_set_name: name of the redis sorted set
+        :param mini: minimum of the range
+        :param maxi: maximum of the range
+        :return: count of the removed items or None
+        """
+        temp = self.redis_connection.zremrangebyscore(sorted_set_name, mini, maxi)
+
+        if temp:
+            return temp
+        else:
+            return None
 
     def insert_hash_set_record(self, hash_set_name, id, content):
         """
@@ -72,6 +185,15 @@ class Redis:
             id
         )
 
+    def check_hash_set_record(self, hash_set_name, id):
+        """
+        check if an id exists in hash-set or not.
+        :param hash_set_name: the name of redis hash set
+        :param id: id in the hash set that we want to check it
+        :return:
+        """
+        return self.redis_connection.hexists(hash_set_name, id)
+
     def get_hash_set_record(self, hash_set_name, id):
         """
 
@@ -104,9 +226,7 @@ class Redis:
         :return: all of the hash set content
         """
         temp = self.redis_connection.hgetall(hash_set_name)
-        temp_dic = {}
-        for key, value in temp.items():
-            temp_dic[json.loads(key)] = json.loads(value)
+        temp_dic = {json.loads(key): json.loads(value) for key, value in temp.items()}
         if temp:
             return temp_dic
         else:

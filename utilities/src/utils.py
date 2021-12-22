@@ -4,6 +4,7 @@ import os
 import jdatetime
 from PIL import Image
 import time
+import math
 
 def check_finish_programm_time(finish_time):
     finish_time = finish_time.split(':')
@@ -110,13 +111,13 @@ def truncate(n, decimals=0, up=False):
         return int(n / multiplier) * multiplier
 
 
-def round_truncate(n, decimal):
-    if decimal < 0:
-        temp = n * (10 ** abs(decimal))
-        return round(round(temp) * (10 ** decimal), abs(decimal))
-    else:
-        temp = n / (10 ** decimal)
-        return round(temp) * (10 ** decimal)
+def round_truncate(number, step, _type="round"):
+    if _type == "round":
+        stepper = 10.0 ** step
+        return math.trunc(stepper * number) / stepper
+    elif _type == "step":
+        temp = number / step
+        return math.floor(temp) * step
 
 
 def get_current_ip(proxies=None):

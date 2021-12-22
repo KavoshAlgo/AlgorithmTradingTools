@@ -117,7 +117,10 @@ def round_truncate(number, step, _type="round"):
         return math.trunc(stepper * number) / stepper
     elif _type == "step":
         temp = number / step
-        return math.floor(temp) * step
+        output = math.floor(temp) * step
+        if step < 1:
+            return float(format(output, '.%sf' % abs(math.floor(math.log10(step)))))
+        return output
 
 
 def get_current_ip(proxies=None):

@@ -111,7 +111,7 @@ def truncate(n, decimals=0, up=False):
         return int(n / multiplier) * multiplier
 
 
-def round_truncate(number, step, _type="round"):
+def round_truncate(number, step, _type="step"):
     if _type == "round":
         stepper = 10.0 ** step
         return math.trunc(stepper * number) / stepper

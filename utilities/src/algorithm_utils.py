@@ -5,5 +5,5 @@ def validate_orderbooks(orderbooks: list):
         if len(orderbook['bids']) <= 0 or len(orderbook['asks']) <= 0:
             return False
         if orderbook['bids'][0][0] >= orderbook['asks'][0][0]:
-            return True
+            return False
     return True

@@ -2,9 +2,9 @@ import requests
 from datetime import datetime
 import os
 import jdatetime
-from PIL import Image
 import time
 import math
+
 
 def check_finish_programm_time(finish_time):
     finish_time = finish_time.split(':')
@@ -41,21 +41,6 @@ def check_start_programm_time(start_time, finish_time):
         if int(datetime.now().hour) == int(start_time[0]) and int(datetime.now().minute) == int(start_time[1]):
             if int(datetime.now().second) > int(start_time[2]):
                 break
-
-
-def convert_images_to_pdf(folder_path, file_name):
-    image_list = os.listdir(folder_path)
-    if len(image_list) != 0:
-        image_file_list = []
-        for img in image_list:
-            img_file = Image.open('%s/%s' % (folder_path, img))
-            image_file_list.append(
-                img_file.convert('RGB')
-            )
-        image_file_list[0].save('%s/../%s.pdf' % (folder_path, file_name), save_all=True,
-                                append_images=image_file_list)
-    else:
-        print('there is no images')
 
 
 def jtoday_maker(date=None, string_date=False):
@@ -139,12 +124,6 @@ def get_current_ip(proxies=None):
         print(str(e))
     else:
         return r.text
-
-
-def renew_tor_ip():
-    with Controller.from_port(port=9051) as controller:
-        controller.authenticate(password="MyStr0n9P#D")
-        controller.signal(Signal.NEWNYM)
 
 
 def chunks(lst, n):

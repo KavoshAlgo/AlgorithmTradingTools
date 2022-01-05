@@ -23,7 +23,7 @@ class StreamConsumer:
         args["value_deserializer"] = lambda m: json.loads(m.decode('ascii'))
         self.logger.info("create a connection to kafka channel(%s) as a consumer ...." % topic)
         self.consumer = KafkaConsumer(
-            topics=topic,
+            topic,
             bootstrap_servers=[StreamConfig.KAFKA_SERVER],
             **args
         )

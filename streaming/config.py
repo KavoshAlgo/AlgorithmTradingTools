@@ -8,3 +8,6 @@ class StreamConfig:
     # producer
     PRODUCER_LOGGER = False
     PRODUCER_LOGGER_PATH = ""
+    # algorithm operation
+    ALGORITHM_OPERATION_LOGGER = False
+    ALGORITHM_OPERATION_LOGGER_PATH = ""

@@ -10,6 +10,7 @@ class StreamProducer:
     def __init__(self, **kwargs):
         """
         create an object of the KafkaProducer
+        :param client_id: the client id of the producer
         :param timeout: timeout of the sending message to the channel
         """
         self.logger = Logger(

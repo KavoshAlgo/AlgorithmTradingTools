@@ -1,9 +1,11 @@
 import redis
 import json
 
+from storage.config import REDIS_PASSWORD, REDIS_PORT, REDIS_HOST
+
 
 class Redis:
-    def __init__(self, password, host="localhost", port=6379):
+    def __init__(self, password=REDIS_PASSWORD, host=REDIS_HOST, port=REDIS_PORT):
         self.redis_connection = redis.Redis(
             host=host,
             port=port,

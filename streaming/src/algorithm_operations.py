@@ -1,7 +1,6 @@
 import threading
 import random
 import string
-import time
 
 from streaming.src.stream_consumer import StreamConsumer
 from streaming.src.stream_producer import StreamProducer
@@ -36,7 +35,8 @@ class AlgorithmOperations:
             self.logger.error("Could not start the consume_user_data thread :" + str(ex))
 
     def consume(self):
-        for item in self.user_data_consumer.consumer:
+        results = self.user_data_consumer.consume()
+        for item in results:
             if "job" in item:
                 self.jobs[item["job_id"]] = item
 
@@ -58,6 +58,6 @@ class AlgorithmOperations:
                 return self.jobs[job_id]["response"], self.jobs[job_id]["status"]
 
     def generate_id(self):
-        job_id = ''.join(random.choices(string.ascii_lowercase, k=5))
+        job_id = ''.join(random.choices(string.ascii_lowercase, k=StreamConfig.ID_HASH_STRING_LENGTH))
         self.jobs[job_id] = None
         return job_id

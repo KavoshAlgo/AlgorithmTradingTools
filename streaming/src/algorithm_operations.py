@@ -35,10 +35,11 @@ class AlgorithmOperations:
             self.logger.error("Could not start the consume_user_data thread :" + str(ex))
 
     def consume(self):
-        results = self.user_data_consumer.consume()
-        for item in results:
-            if "job" in item:
-                self.jobs[item["job_id"]] = item
+        while True:
+            results = self.user_data_consumer.consume()
+            for item in results:
+                if "job" in item:
+                    self.jobs[item["job_id"]] = item
 
     def send_order(self, **kwargs):
         return self.do_job("send_order", **kwargs)

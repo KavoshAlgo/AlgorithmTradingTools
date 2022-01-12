@@ -43,6 +43,6 @@ class StreamConsumer:
             if len(data) > 0:
                 self.id_dict = {self.topic: list(data[0][1][-1])[0]}
                 events = []
-                for i in range(1, len(list(data[0][1]))):
+                for i in range(len(list(data[0][1]))):
                     events.append(json.loads(list(data[0][1][i])[1][b"data"]))
                 return events

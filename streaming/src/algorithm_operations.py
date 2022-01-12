@@ -8,9 +8,12 @@ from streaming.config import StreamConfig
 
 from monitoring.src.logger import Logger
 
+from storage.redis.src.redis import Redis
+
 
 class AlgorithmOperations:
-    def __init__(self, operation_producer: StreamProducer, user_data_consumer: StreamConsumer, producer_topic: str):
+    def __init__(self, operation_producer: StreamProducer, user_data_consumer: StreamConsumer, producer_topic: str,
+                 job_hash_set_name: str):
         """
         create an object of the AlgorithmOperations that handle communication with broker side
         :rtype: AlgorithmOperations object
@@ -25,7 +28,8 @@ class AlgorithmOperations:
         '''
             handle jobs with this dictionary
         '''
-        self.jobs = {}
+        self.job_hash_set_name = job_hash_set_name
+        self.redis = Redis()
         self.logger = Logger(StreamConfig.ALGORITHM_OPERATION_LOGGER, StreamConfig.ALGORITHM_OPERATION_LOGGER_PATH)
 
     def start(self):
@@ -39,7 +43,7 @@ class AlgorithmOperations:
             results = self.user_data_consumer.consume()
             for item in results:
                 if "job" in item:
-                    self.jobs[item["job_id"]] = item
+                    self.redis.insert_hash_set_record(self.job_hash_set_name, item["job_id"], item)
 
     def send_order(self, **kwargs):
         return self.do_job("send_order", **kwargs)
@@ -55,8 +59,9 @@ class AlgorithmOperations:
             "job_args": kwargs
         })
         while True:
-            if job_id in self.jobs:
-                return self.jobs[job_id]["response"], self.jobs[job_id]["status"]
+            job = self.redis.get_hash_set_record(self.job_hash_set_name, job_id)
+            if job:
+                return job["response"], job["status"]
 
     @staticmethod
     def generate_id():

@@ -31,7 +31,7 @@ class StreamConsumer:
             host=StreamConfig.REDIS_SERVER,
             port=StreamConfig.REDIS_PORT,
             password=StreamConfig.REDIS_PASSWORD)
-        self.logger.info("%s consumer connection is established")
+        self.logger.info("consumer connection is established")
 
     def consume(self):
         while True:

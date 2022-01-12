@@ -55,10 +55,10 @@ class AlgorithmOperations:
             "job_args": kwargs
         })
         while True:
-            if self.jobs[job_id]:
+            if job_id in self.jobs:
                 return self.jobs[job_id]["response"], self.jobs[job_id]["status"]
 
-    def generate_id(self):
+    @staticmethod
+    def generate_id():
         job_id = ''.join(random.choices(string.ascii_lowercase, k=StreamConfig.ID_HASH_STRING_LENGTH))
-        self.jobs[job_id] = None
         return job_id

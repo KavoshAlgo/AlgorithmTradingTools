@@ -3,6 +3,8 @@ import os
 from datetime import datetime
 from colorlog import ColoredFormatter
 from playsound import playsound
+from datetime import datetime
+from pytz import timezone
 
 
 def root_path(path):
@@ -13,7 +15,7 @@ class Logger:
 
     def __init__(self, main, file_name,
                  format="%(white)s%(asctime)s - %(log_color)s%(levelname)s - %(log_color)s%(message)s",
-                 dateformat="%I:%M:%S %p", info_audio="Info1", critical_audio="Critical1"):
+                 dateformat="%I:%M:%S %p", info_audio="Info1", critical_audio="Critical1", time_zone='Asia/Tehran'):
         self.file_name = file_name
         logging.addLevelName(60, "SUCCESS")
         logging.addLevelName(70, "REPORT")
@@ -22,6 +24,12 @@ class Logger:
         self.logger.setLevel(logging.INFO)
         self.ch = logging.StreamHandler()
         self.ch.setLevel(logging.DEBUG)
+
+        def timetz(*args):
+            return datetime.now(tz).timetuple()
+
+        tz = timezone(time_zone)
+        logging.Formatter.converter = timetz
         self.formatter = logging.Formatter(format, dateformat)
         self.ch.setFormatter(ColoredFormatter(format, dateformat, log_colors={'DEBUG': 'white',
                                                                               'INFO': 'blue',

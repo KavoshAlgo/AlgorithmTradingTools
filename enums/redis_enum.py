@@ -6,8 +6,8 @@ class RedisEnums:
 
     class Set:
         ORDERBOOK = "_orderbook_"
+        EXCHANGE_INFO = "_exchange_info"
 
     class Sortedset:
-
         Send_Edit_Error = "_send&edit&error_"
         Trade = "_trade_"

@@ -11,3 +11,8 @@ class RedisEnums:
     class Sortedset:
         Send_Edit_Error = "_send&edit&error_"
         Trade = "_trade_"
+
+    class Stream:
+        MARKET = "_market_data"  # standard: BROKER_NAME + Stream.MARKET
+        USER_DATA = "_broker_user_data_"  # standard: BROKER_NAME + Stream.USER_DATA + USERNAME
+        USER_REQUEST = "_broker_user_request_"  # standard: BROKER_NAME + Stream.USER_REQUEST + USERNAME

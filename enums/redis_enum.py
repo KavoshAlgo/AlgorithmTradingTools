@@ -17,5 +17,5 @@ class RedisEnums:
         USER_DATA = "_broker_user_data_"  # standard: BROKER_NAME + Stream.USER_DATA + USERNAME
         USER_REQUEST = "_broker_user_request_"  # standard: BROKER_NAME + Stream.USER_REQUEST + USERNAME
 
-    class Signals:
+    class Signal:
         TRAP_CANCEL_SIGNAL = "_trap_cancel_signal_"  # standard: BROKER_NAME + Signals.TRAP_CANCEL_SIGNAL + USERNAME

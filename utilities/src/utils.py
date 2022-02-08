@@ -6,6 +6,7 @@ import time
 import math
 import sys
 import asyncio
+import ssl
 
 SSL_PROTOCOLS = (asyncio.sslproto.SSLProtocol,)
 try:

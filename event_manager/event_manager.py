@@ -17,8 +17,10 @@ class EventManager:
     def start(self):
         self.event_examiner.start()
 
-    def get_new_event(self, topic : str) -> Event:
-        event = Event(event_id=self.generate_event_id(),  event_topic=topic)
+    def get_new_event(self, event_type: str, event_topic: str, event_id=None) -> Event:
+        if not event_id:
+            event_id = self.generate_event_id()
+        event = Event(event_id=event_id, event_type=event_type,  event_topic=event_topic)
         self.add_topic_event_into_examiner(event)
         return event
 

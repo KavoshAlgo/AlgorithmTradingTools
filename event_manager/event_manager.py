@@ -14,6 +14,9 @@ class EventManager:
         self.event_examiner = EventExaminer()
         self.logger = Logger(False, '')
 
+    def start(self):
+        self.event_examiner.start()
+
     def get_new_event(self):
         return Event(self.generate_event_id())
 

@@ -1,8 +1,8 @@
 from streaming.src.stream_producer import StreamProducer
 from monitoring.src.logger import Logger
 from enums.event_types import EventTypes
-from event_manager.event_manager import EventManager
-from event_manager.event import Event
+from events.event_manager import EventManager
+from events.event import Event
 
 
 class BrokerService:
@@ -22,9 +22,9 @@ class BrokerService:
     def edit_order(self, **kwargs):
         return self.do_job("edit_order", **kwargs)
 
-    def do_job(self, job, **kwargs) -> Event:
+    async def do_job(self, job, **kwargs) -> Event:
         event_id = self.event_manager_obj.generate_event_id()
-        event = self.event_manager_obj.get_new_event(
+        event = await self.event_manager_obj.get_new_event(
             event_type=EventTypes.ALGORITHM_REQUEST_EVENT,
             event_topic=EventTypes.ALGORITHM_REQUEST_EVENT + event_id,
             event_id=event_id)

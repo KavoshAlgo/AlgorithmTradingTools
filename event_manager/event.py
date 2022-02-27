@@ -11,7 +11,7 @@ class Event(asyncio.Event):
         self.EVENT_ID = event_id
         self.EVENT_TOPIC = event_topic
         self.EVENT_TYPE = event_type
-    
+
     def trigger_event(self, value):
         self.EVENT_VALUE = value
         self.set()

@@ -2,7 +2,7 @@ import asyncio
 import threading
 
 from streaming.src.stream_consumer import StreamConsumer
-from event_manager.event import Event
+from events.event import Event
 from enums.orderbooks import Orderbooks
 from enums.event_types import EventTypes
 

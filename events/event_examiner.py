@@ -48,7 +48,7 @@ class EventExaminer:
                     topic = item["event_type"] + self.account_username
                 if topic and topic in self.topics_events:
                     events = await self.remove_topic_events(topic)
-                    await self.trigger_topics_events(events)
+                    await self.trigger_topics_events(events,item)
                 else:
                     print("Missed Event in examine_events_account_data_channel")
 
@@ -59,9 +59,9 @@ class EventExaminer:
             else:
                 self.topics_events[event.EVENT_TOPIC] = [event]
 
-    async def trigger_topics_events(self, events):
+    async def trigger_topics_events(self, events, value):
         for event in events:
-            Event.trigger_event(event)
+            event.trigger_event(value)
 
     async def remove_topic_events(self, topic):
         async with self.lock:

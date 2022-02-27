@@ -33,7 +33,7 @@ class EventExaminer:
                 topic = item["event_type"] + item[Orderbooks.MARKET]
                 if topic in self.topics_events:
                     events = await self.remove_topic_events(topic)
-                    await self.trigger_topics_events(events)
+                    await self.trigger_topics_events(events, item)
                 else:
                     print("Missed Event in examine_events_market_channel")
 
@@ -48,7 +48,7 @@ class EventExaminer:
                     topic = item["event_type"] + self.account_username
                 if topic and topic in self.topics_events:
                     events = await self.remove_topic_events(topic)
-                    await self.trigger_topics_events(events,item)
+                    await self.trigger_topics_events(events, item)
                 else:
                     print("Missed Event in examine_events_account_data_channel")
 

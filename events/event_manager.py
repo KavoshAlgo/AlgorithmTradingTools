@@ -10,8 +10,8 @@ from events.event import Event
 
 
 class EventManager:
-    def __init__(self):
-        self.event_examiner = EventExaminer()
+    def __init__(self, market_channel_name, account_data_channel_name, account_username):
+        self.event_examiner = EventExaminer(market_channel_name, account_data_channel_name, account_username)
         self.logger = Logger(False, '')
 
     def start(self):

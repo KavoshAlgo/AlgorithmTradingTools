@@ -13,3 +13,4 @@ class Orderbooks:
     YESTERDAY_PRICE = 'yesterday_price'
     BIDS = 'bids'
     ASKS = 'asks'
+    EVENT_TYPE = 'event_type'

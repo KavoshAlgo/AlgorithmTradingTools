@@ -65,7 +65,7 @@ class EventExaminer:
 
     async def remove_topic_events(self, topic):
         async with self.lock:
-            events = self.topics_events[topic].pop()
+            events = self.topics_events.pop(topic)
             return events
 
     # TODO: ignore these two functions for now

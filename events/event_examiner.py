@@ -17,7 +17,7 @@ class EventExaminer:
         self.loop = None
 
     def start(self):
-        threading.Thread(name="EventExaminer_create_loop", target=self.create_loop, daemon=False)
+        threading.Thread(name="EventExaminer_loop", target=self.create_loop, daemon=False).start()
 
     def create_loop(self):
         self.loop = asyncio.new_event_loop()
@@ -34,18 +34,23 @@ class EventExaminer:
                 if topic in self.topics_events:
                     events = await self.remove_topic_events(topic)
                     await self.trigger_topics_events(events)
+                else:
+                    print("Missed Event in examine_events_market_channel")
 
     async def examine_events_account_data_channel(self):
         while True:
             data = self.account_data_channel_consumer.consume()
             for item in data:
+                topic = None
                 if item["event_type"] == EventTypes.ACCOUNT_ORDER_EVENT:
                     topic = item["event_type"] + item[Orderbooks.ID]
                 elif item["event_type"] == EventTypes.ACCOUNT_PORTFOLIO_EVENT:
                     topic = item["event_type"] + self.account_username
-                    if topic in self.topics_events:
-                        events = await self.remove_topic_events(topic)
-                        await self.trigger_topics_events(events)
+                if topic and topic in self.topics_events:
+                    events = await self.remove_topic_events(topic)
+                    await self.trigger_topics_events(events)
+                else:
+                    print("Missed Event in examine_events_account_data_channel")
 
     async def add_topic_event(self, event: Event):
         async with self.lock:

@@ -59,7 +59,8 @@ class EventExaminer:
             else:
                 self.topics_events[event.EVENT_TOPIC] = [event]
 
-    async def trigger_topics_events(self, events, value):
+    @staticmethod
+    async def trigger_topics_events(events, value):
         for event in events:
             event.trigger_event(value)
 

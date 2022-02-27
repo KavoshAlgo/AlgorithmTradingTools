@@ -43,7 +43,7 @@ class EventExaminer:
             for item in data:
                 topic = None
                 if item["event_type"] == EventTypes.ACCOUNT_ORDER_EVENT:
-                    topic = item["event_type"] + item[Orderbooks.ID]
+                    topic = item["event_type"] + str(item[Orderbooks.ID])
                 elif item["event_type"] == EventTypes.ACCOUNT_PORTFOLIO_EVENT:
                     topic = item["event_type"] + self.account_username
                 if topic and topic in self.topics_events:

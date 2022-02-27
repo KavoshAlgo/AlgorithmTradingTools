@@ -13,14 +13,14 @@ class BrokerService:
         self.producer_topic = algorithm_request_channel
         self.event_manager_obj = event_manager_obj
 
-    def send_order(self, **kwargs):
-        return self.do_job("send_order", **kwargs)
+    async def send_order(self, **kwargs):
+        return await self.do_job("send_order", **kwargs)
 
-    def cancel_order(self, **kwargs):
-        return self.do_job("cancel_order", **kwargs)
+    async def cancel_order(self, **kwargs):
+        return await self.do_job("cancel_order", **kwargs)
 
-    def edit_order(self, **kwargs):
-        return self.do_job("edit_order", **kwargs)
+    async def edit_order(self, **kwargs):
+        return await self.do_job("edit_order", **kwargs)
 
     async def do_job(self, job, **kwargs) -> Event:
         event_id = self.event_manager_obj.generate_event_id()

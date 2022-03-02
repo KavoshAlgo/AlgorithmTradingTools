@@ -15,9 +15,7 @@ from events.event import Event
 
 # TODO fix naming and basic (flow chart)
 # TODO edit def main to new version
-# TODO Write def check_coudition
 # TODO Write def ex_change_usdtirt
-# TODO Write def get_usdt_irt_portfolio
 
 class PortfolioBalancing:
 
@@ -44,7 +42,18 @@ class PortfolioBalancing:
             self.logger.error("Could not start the manage requests :" + str(ex))
 
     def main(self, broker):
-        pass
+        while True:
+            usdt_portfolio, irt_portfolio = self.get_usdt_irt_portfolio(broker, self.username)
+            if self.check_condition("condition1", usdt_portfolio, irt_portfolio):
+                time.sleep(self.execution_wait_time)
+                usdt_portfolio, irt_portfolio = self.get_usdt_irt_portfolio(broker, self.username)
+                if self.check_condition("condition1", usdt_portfolio, irt_portfolio):
+                    self.send_order()
+            if self.check_condition("condition2", usdt_portfolio, irt_portfolio):
+                time.sleep(self.execution_wait_time)
+                usdt_portfolio, irt_portfolio = self.get_usdt_irt_portfolio(broker, self.username)
+            if self.check_condition("condition2", usdt_portfolio, irt_portfolio):
+                self.send_order()
 
     def check_condition(self, condition, usdt_portfolio, irt_portfolio):
         if condition == "condition1":
@@ -71,7 +80,17 @@ class PortfolioBalancing:
         pass
 
     def get_usdt_irt_portfolio(self, broker, username):
-        pass
+        try:
+            usdt_portfolio = self.redis.get_hash_set_record(broker + RedisEnums.Hashset.PORTFOLIO + username,
+                                                            self.USDT[Portfolio.AVAILABLE_VOL])
+            irt_portfolio = self.redis.get_hash_set_record(broker + RedisEnums.Hashset.PORTFOLIO + username,
+                                                           self.IRT[Portfolio.AVAILABLE_VOL])
+            if usdt_portfolio is not None and irt_portfolio is not None:
+                return usdt_portfolio, irt_portfolio
+            else:
+                raise Exception('there is a problem in get portfolio %s - %s' % (usdt_portfolio, irt_portfolio))
+        except Exception as ex:
+            self.logger.error(ex)
 
 
 if __name__ == '__main__':

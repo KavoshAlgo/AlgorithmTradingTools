@@ -11,6 +11,7 @@ class Order:
     EXECUTED_QTY = 'filled'
     ORDERBOOKID = 'orderbookid'
     Trades = 'trades'
+    EVENT_TYPE = 'event_type'
 
     class OrderStatus:
         ACTIVE = "Active"

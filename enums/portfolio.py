@@ -4,6 +4,7 @@ class Portfolio:
     BLOCKED_VOL = 'blocked_vol'
     TOTAL_VOL = 'total_vol'
     SYMBOL = 'symbol'
+    EVENT_TYPE = 'event_type'
 
 
 class FuturePortfolio(Portfolio):

@@ -46,8 +46,23 @@ class PortfolioBalancing:
     def main(self, broker):
         pass
 
-    def check_coudition(self, condition, usdt_portfolio, irt_portfolio):
-        pass
+    def check_condition(self, condition, usdt_portfolio, irt_portfolio):
+        if condition == "condition1":
+            first_con = usdt_portfolio < self.trade_value_threshold
+            second_con = irt_portfolio > self.threshold_factor * self.trade_value_threshold
+            third_con = self.trade_value_threshold < usdt_portfolio < self.portfolio_balance_threshold
+            fourth_con = irt_portfolio > self.threshold_factor * self.portfolio_balance_threshold
+            if (first_con and second_con) or (third_con and fourth_con):
+                return True
+            else:
+                return False
+        elif condition == "condition2":
+            con_five = self.trade_value_threshold < usdt_portfolio < self.portfolio_balance_threshold
+            con_six = irt_portfolio > self.threshold_factor * self.portfolio_balance_threshold
+            con_seven = self.trade_value_threshold < irt_portfolio < self.portfolio_balance_threshold
+            con_eight = usdt_portfolio > self.threshold_factor * self.portfolio_balance_threshold
+            if (con_five and con_six) or (con_seven and con_eight):
+                return True
 
     def send_order(self):
         pass

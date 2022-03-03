@@ -40,7 +40,7 @@ class PortfolioBalancing:
             self.logger.error("Could not start the main method :" + str(ex))
 
     def main(self):
-        """ """
+        """ check portfolio If needed to send order """
         while True:
             usdt_portfolio, irt_portfolio = self.get_usdt_irt_portfolio()
             if self.check_condition("condition1", usdt_portfolio, self.change_usdtirt(irt_portfolio)):
@@ -63,6 +63,7 @@ class PortfolioBalancing:
                     )
 
     def check_condition(self, condition, usdt_portfolio, irt_portfolio):
+        """ check portfolio to always in balance """
         if condition == "condition1":
             first_con = usdt_portfolio < self.trade_value_threshold
             second_con = irt_portfolio > self.threshold_factor * self.trade_value_threshold
@@ -83,6 +84,7 @@ class PortfolioBalancing:
                 return False
 
     def send_order(self, side, price, vol):
+        """ send order method """
         order, status = self.broker.send_order(
             market=self.market,
             side=side,
@@ -95,10 +97,12 @@ class PortfolioBalancing:
             self.logger.error('there is a problem can`t sending order : %s ' % order)
 
     def change_usdtirt(self, irt_portfolio):
+        """ change TOMAN to USDT """
         order_book = self.get_usdt_irt_orderbook()
         return irt_portfolio[Portfolio.AVAILABLE_VOL] / order_book[Orderbooks.ASKS][0][0]
 
     def get_usdt_irt_portfolio(self):
+        """ get portfolio data from redis"""
         try:
             usdt_portfolio = self.redis.get_hash_set_record(self.broker_name +
                                                             RedisEnums.Hashset.PORTFOLIO +
@@ -118,6 +122,7 @@ class PortfolioBalancing:
             self.logger.error(ex)
 
     def get_usdt_irt_orderbook(self):
+        """ get data from order book on redis"""
         return self.redis.get_set_record(self.broker + RedisEnums.Set.ORDERBOOK + self.market)
 
 

@@ -14,7 +14,6 @@ from events.event import Event
 
 
 # TODO fix naming and basic (flow chart)
-# TODO edit def main to new version
 # TODO Write def ex_change_usdtirt
 
 class PortfolioBalancing:
@@ -44,18 +43,18 @@ class PortfolioBalancing:
     def main(self, broker):
         while True:
             usdt_portfolio, irt_portfolio = self.get_usdt_irt_portfolio(broker, self.username)
-            if self.check_condition("condition1", usdt_portfolio, irt_portfolio):
+            if self.check_condition("condition1", usdt_portfolio, irt_portfolio, self.ex_change_usdtirt()):
                 time.sleep(self.execution_wait_time)
                 usdt_portfolio, irt_portfolio = self.get_usdt_irt_portfolio(broker, self.username)
-                if self.check_condition("condition1", usdt_portfolio, irt_portfolio):
+                if self.check_condition("condition1", usdt_portfolio, irt_portfolio, self.ex_change_usdtirt):
                     self.send_order()
-            if self.check_condition("condition2", usdt_portfolio, irt_portfolio):
+            if self.check_condition("condition2", usdt_portfolio, irt_portfolio, self.ex_change_usdtirt):
                 time.sleep(self.execution_wait_time)
                 usdt_portfolio, irt_portfolio = self.get_usdt_irt_portfolio(broker, self.username)
-            if self.check_condition("condition2", usdt_portfolio, irt_portfolio):
+            if self.check_condition("condition2", usdt_portfolio, irt_portfolio, self.ex_change_usdtirt):
                 self.send_order()
 
-    def check_condition(self, condition, usdt_portfolio, irt_portfolio):
+    def check_condition(self, condition, usdt_portfolio, irt_portfolio, ex_change_usdtirt):
         if condition == "condition1":
             first_con = usdt_portfolio < self.trade_value_threshold
             second_con = irt_portfolio > self.threshold_factor * self.trade_value_threshold
@@ -73,11 +72,22 @@ class PortfolioBalancing:
             if (con_five and con_six) or (con_seven and con_eight):
                 return True
 
-    def send_order(self):
-        pass
+    def send_order(self, side, price, vol):
+        order, status = self.broker.send_order(
+            market=self.market,
+            side=side,
+            price=price,
+            vol=vol
+        )
+        if status == 'ok':
+            self.logger.info('sending order successfully : %s' % order)
+        else:
+            self.logger.error('there is a problem can`t sending order : %s ' % order)
 
     def ex_change_usdtirt(self):
-        pass
+        usdt_portfolio, irt_portfolio = self.get_usdt_irt_portfolio(self.broker, self.username)
+        order_book = self.redis.get_set_record(self.broker + RedisEnums.Set.ORDERBOOK + self.market)
+        return irt_portfolio[Portfolio.AVAILABLE_VOL] / order_book[Orderbooks.ASKS][0][0]
 
     def get_usdt_irt_portfolio(self, broker, username):
         try:

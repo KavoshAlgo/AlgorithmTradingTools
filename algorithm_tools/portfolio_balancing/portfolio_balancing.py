@@ -14,7 +14,6 @@ from events.event import Event
 
 
 # TODO fix naming and basic (flow chart)
-# TODO Write def ex_change_usdtirt
 
 class PortfolioBalancing:
 

@@ -49,7 +49,7 @@ class PortfolioBalancing:
                 if self.check_condition("condition1", usdt_portfolio, self.change_usdtirt(irt_portfolio)):
                     self.send_order(
                         side=Order.OrderSide.BUY,
-                        price=self.get_usdt_irt_orderbook()[Orderbooks.ASKS][0][0] + self.extra_price,
+                        price=float(self.get_usdt_irt_orderbook()[Orderbooks.ASKS][0][0]) + self.extra_price,
                         vol=self.vol_factor * self.change_usdtirt(irt_portfolio)
                     )
             if self.check_condition("condition2", usdt_portfolio, self.change_usdtirt(irt_portfolio)):
@@ -58,7 +58,7 @@ class PortfolioBalancing:
                 if self.check_condition("condition2", usdt_portfolio, self.change_usdtirt(irt_portfolio)):
                     self.send_order(
                         side=Order.OrderSide.SELL,
-                        price=self.get_usdt_irt_orderbook()[Orderbooks.BIDS][0][0] - self.extra_price,
+                        price=float(self.get_usdt_irt_orderbook()[Orderbooks.BIDS][0][0]) - self.extra_price,
                         vol=self.vol_factor * usdt_portfolio
                     )
 
@@ -99,7 +99,7 @@ class PortfolioBalancing:
     def change_usdtirt(self, irt_portfolio):
         """ change TOMAN to USDT """
         order_book = self.get_usdt_irt_orderbook()
-        return irt_portfolio / order_book[Orderbooks.ASKS][0][0]
+        return irt_portfolio / float(order_book[Orderbooks.ASKS][0][0])
 
     def get_usdt_irt_portfolio(self):
         """ get portfolio data from redis"""

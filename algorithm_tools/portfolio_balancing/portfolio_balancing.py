@@ -99,7 +99,7 @@ class PortfolioBalancing:
     def change_usdtirt(self, irt_portfolio):
         """ change TOMAN to USDT """
         order_book = self.get_usdt_irt_orderbook()
-        return irt_portfolio[Portfolio.AVAILABLE_VOL] / order_book[Orderbooks.ASKS][0][0]
+        return irt_portfolio / order_book[Orderbooks.ASKS][0][0]
 
     def get_usdt_irt_portfolio(self):
         """ get portfolio data from redis"""

@@ -16,7 +16,7 @@ class PortfolioBalancing:
                  threshold_factor=2, vol_factor=0.5, extra_price=100, execution_wait_time=120):
         """ initial class essential objects and agents """
         self.redis = Redis()
-        self.logger = Logger(True, '')
+        self.logger = Logger(False, '')
         self.broker = broker_object
         """ PortfolioBalancing configs """
         self.broker_name = broker_name
@@ -92,9 +92,9 @@ class PortfolioBalancing:
             vol=vol
         )
         if status == 'ok':
-            self.logger.info('sending order successfully : %s' % order)
+            self.logger.warning('balance USDT-IRT with order : %s' % order)
         else:
-            self.logger.error('there is a problem can`t sending order : %s ' % order)
+            self.logger.error('balance USDT-IRT can`t send order : %s ' % order)
 
     def change_usdtirt(self, irt_portfolio):
         """ change TOMAN to USDT """

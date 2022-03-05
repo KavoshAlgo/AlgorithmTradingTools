@@ -12,8 +12,8 @@ from enums.order import Order
 
 
 class PortfolioBalancing:
-    def __init__(self, username, broker_object, broker_name, trade_value_threshold=0, portfolio_balance_threshold=0,
-                 threshold_factor=0, vol_factor=0, extra_price=0, execution_wait_time=120):
+    def __init__(self, username, broker_object, broker_name, trade_value_threshold=20, portfolio_balance_threshold=200,
+                 threshold_factor=2, vol_factor=0.5, extra_price=100, execution_wait_time=120):
         """ initial class essential objects and agents """
         self.redis = Redis()
         self.logger = Logger(True, '')

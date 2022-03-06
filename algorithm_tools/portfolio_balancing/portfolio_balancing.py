@@ -16,7 +16,7 @@ class PortfolioBalancing:
                  threshold_factor=2, vol_factor=0.5, extra_price=100, execution_wait_time=120):
         """ initial class essential objects and agents """
         self.redis = Redis()
-        self.logger = Logger(True, '')
+        self.logger = Logger(False, '')
         self.broker = broker_object
         """ PortfolioBalancing configs """
         self.broker_name = broker_name
@@ -49,7 +49,7 @@ class PortfolioBalancing:
                 if self.check_condition("condition1", usdt_portfolio, self.change_usdtirt(irt_portfolio)):
                     self.send_order(
                         side=Order.OrderSide.BUY,
-                        price=self.get_usdt_irt_orderbook()[Orderbooks.ASKS][0][0] + self.extra_price,
+                        price=float(self.get_usdt_irt_orderbook()[Orderbooks.ASKS][0][0]) + self.extra_price,
                         vol=self.vol_factor * self.change_usdtirt(irt_portfolio)
                     )
             if self.check_condition("condition2", usdt_portfolio, self.change_usdtirt(irt_portfolio)):
@@ -58,7 +58,7 @@ class PortfolioBalancing:
                 if self.check_condition("condition2", usdt_portfolio, self.change_usdtirt(irt_portfolio)):
                     self.send_order(
                         side=Order.OrderSide.SELL,
-                        price=self.get_usdt_irt_orderbook()[Orderbooks.BIDS][0][0] - self.extra_price,
+                        price=float(self.get_usdt_irt_orderbook()[Orderbooks.BIDS][0][0]) - self.extra_price,
                         vol=self.vol_factor * usdt_portfolio
                     )
 
@@ -92,14 +92,14 @@ class PortfolioBalancing:
             vol=vol
         )
         if status == 'ok':
-            self.logger.info('sending order successfully : %s' % order)
+            self.logger.warning('balance USDT-IRT with order : %s' % order)
         else:
-            self.logger.error('there is a problem can`t sending order : %s ' % order)
+            self.logger.error('balance USDT-IRT can`t send order : %s ' % order)
 
     def change_usdtirt(self, irt_portfolio):
         """ change TOMAN to USDT """
         order_book = self.get_usdt_irt_orderbook()
-        return irt_portfolio[Portfolio.AVAILABLE_VOL] / order_book[Orderbooks.ASKS][0][0]
+        return irt_portfolio / float(order_book[Orderbooks.ASKS][0][0])
 
     def get_usdt_irt_portfolio(self):
         """ get portfolio data from redis"""
@@ -123,10 +123,7 @@ class PortfolioBalancing:
 
     def get_usdt_irt_orderbook(self):
         """ get data from order book on redis"""
-        while True:
-            response = self.redis.get_set_record(self.broker + RedisEnums.Set.ORDERBOOK + self.market)
-            if response is not None:
-                return response
+        return self.redis.get_set_record(self.broker_name + RedisEnums.Set.ORDERBOOK + self.market)
 
 
 if __name__ == '__main__':

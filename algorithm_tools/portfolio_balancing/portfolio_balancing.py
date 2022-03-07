@@ -123,7 +123,10 @@ class PortfolioBalancing:
 
     def get_usdt_irt_orderbook(self):
         """ get data from order book on redis"""
-        return self.redis.get_set_record(self.broker_name + RedisEnums.Set.ORDERBOOK + self.market)
+        while True:
+            response = self.redis.get_set_record(self.broker_name + RedisEnums.Set.ORDERBOOK + self.market)
+            if response is not None:
+                return response
 
 
 if __name__ == '__main__':

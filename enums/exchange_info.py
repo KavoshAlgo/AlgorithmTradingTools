@@ -3,7 +3,7 @@ class ExchangeInfo:
     LOT = 'lot'
     MODE = "mode"
     COINS = 'coins'
-    MARKET = 'market'
+    MARKETS = 'markets'
 
     class TruncateMode:
         STEP = "step"

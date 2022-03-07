@@ -5,6 +5,8 @@ from streaming.src.stream_consumer import StreamConsumer
 from events.event import Event
 from enums.orderbooks import Orderbooks
 from enums.event_types import EventTypes
+from enums.order import Order
+from enums.algorithm_request import AlgorithmRequest
 
 
 class EventExaminer:
@@ -30,7 +32,7 @@ class EventExaminer:
         while True:
             data = self.market_channel_consumer.consume()
             for item in data:
-                topic = item["event_type"] + item[Orderbooks.MARKET]
+                topic = item[AlgorithmRequest.EVENT_TYPE] + item[Orderbooks.MARKET]
                 if topic in self.topics_events:
                     events = await self.remove_topic_events(topic)
                     await self.trigger_topics_events(events, item)
@@ -42,10 +44,13 @@ class EventExaminer:
             data = self.account_data_channel_consumer.consume()
             for item in data:
                 topic = None
-                if item["event_type"] == EventTypes.ACCOUNT_ORDER_EVENT:
-                    topic = item["event_type"] + str(item[Orderbooks.ID])
-                elif item["event_type"] == EventTypes.ACCOUNT_PORTFOLIO_EVENT:
-                    topic = item["event_type"] + self.account_username
+                if item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ACCOUNT_ORDER_EVENT:
+                    topic = item[AlgorithmRequest.EVENT_TYPE] + str(item[Order.ORDER_ID])
+                elif item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ACCOUNT_PORTFOLIO_EVENT:
+                    topic = item[AlgorithmRequest.EVENT_TYPE] + self.account_username
+                elif item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ALGORITHM_REQUEST_EVENT:
+                    topic = item[AlgorithmRequest.EVENT_TYPE] + str(item[AlgorithmRequest.JOB_ID])
+
                 if topic and topic in self.topics_events:
                     events = await self.remove_topic_events(topic)
                     await self.trigger_topics_events(events, item)

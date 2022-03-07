@@ -3,6 +3,7 @@ from monitoring.src.logger import Logger
 from enums.event_types import EventTypes
 from events.event_manager import EventManager
 from events.event import Event
+from enums.algorithm_request import AlgorithmRequest
 
 
 class BrokerService:
@@ -29,8 +30,8 @@ class BrokerService:
             event_topic=EventTypes.ALGORITHM_REQUEST_EVENT + event_id,
             event_id=event_id)
         self.stream_producer.send(self.producer_topic, {
-            "job_id": event.EVENT_ID,
-            "job": job,
-            "job_args": kwargs
+            AlgorithmRequest.JOB_ID: event.EVENT_ID,
+            AlgorithmRequest.JOB: job,
+            AlgorithmRequest.JOB_ARGS: kwargs
         })
         return event

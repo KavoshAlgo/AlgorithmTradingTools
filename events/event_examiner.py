@@ -17,16 +17,23 @@ class EventExaminer:
         self.topics_events = dict()
         self.lock = asyncio.Lock()
         self.loop = None
+        self.loop2 = None
 
     def start(self):
-        threading.Thread(name="EventExaminer_loop", target=self.create_loop, daemon=False).start()
+        threading.Thread(name="examine_events_account_data_channel_loop", target=self.create_loop, daemon=False).start()
+        threading.Thread(name="examine_events_market_channel_loop", target=self.create_loop2, daemon=False).start()
 
     def create_loop(self):
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
-        asyncio.ensure_future(self.examine_events_market_channel())
         asyncio.ensure_future(self.examine_events_account_data_channel())
         self.loop.run_forever()
+
+    def create_loop2(self):
+        self.loop2 = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop2)
+        asyncio.ensure_future(self.examine_events_market_channel())
+        self.loop2.run_forever()
 
     async def examine_events_market_channel(self):
         while True:

@@ -15,13 +15,14 @@ class EventExaminer:
         self.account_data_channel_consumer = StreamConsumer(account_data_channel_name)
         self.account_username = account_username
         self.topics_events = dict()
+        self.cache_orders = dict()
         self.lock = asyncio.Lock()
         self.loop = None
-        self.loop2 = None
+        self.loop_second = None
 
     def start(self):
         threading.Thread(name="examine_events_account_data_channel_loop", target=self.create_loop, daemon=False).start()
-        threading.Thread(name="examine_events_market_channel_loop", target=self.create_loop2, daemon=False).start()
+        threading.Thread(name="examine_events_market_channel_loop", target=self.create_second_loop, daemon=False).start()
 
     def create_loop(self):
         self.loop = asyncio.new_event_loop()
@@ -29,11 +30,11 @@ class EventExaminer:
         asyncio.ensure_future(self.examine_events_account_data_channel())
         self.loop.run_forever()
 
-    def create_loop2(self):
-        self.loop2 = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.loop2)
+    def create_second_loop(self):
+        self.loop_second = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop_second)
         asyncio.ensure_future(self.examine_events_market_channel())
-        self.loop2.run_forever()
+        self.loop_second.run_forever()
 
     async def examine_events_market_channel(self):
         while True:
@@ -63,13 +64,19 @@ class EventExaminer:
                     await self.trigger_topics_events(events, item)
                 else:
                     print("Missed Event in examine_events_account_data_channel")
+                    if EventTypes.ACCOUNT_ORDER_EVENT in topic:
+                        self.cache_orders[topic] = item
 
     async def add_topic_event(self, event: Event):
         async with self.lock:
             if event.EVENT_TOPIC in self.topics_events.keys():
                 self.topics_events[event.EVENT_TOPIC].append(event)
             else:
-                self.topics_events[event.EVENT_TOPIC] = [event]
+                if event.EVENT_TOPIC in self.cache_orders:
+                    await self.trigger_topics_events([event], self.cache_orders[event.EVENT_TOPIC])
+                    self.cache_orders.pop(event.EVENT_TOPIC)
+                else:
+                    self.topics_events[event.EVENT_TOPIC] = [event]
 
     @staticmethod
     async def trigger_topics_events(events, value):

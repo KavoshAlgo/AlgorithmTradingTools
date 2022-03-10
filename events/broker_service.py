@@ -7,12 +7,13 @@ from enums.algorithm_request import AlgorithmRequest
 
 
 class BrokerService:
-    def __init__(self, algorithm_request_channel: str, event_manager_obj: EventManager):
+    def __init__(self, algorithm_request_channel: str, event_manager_obj: EventManager, loop):
 
         self.logger = Logger(False, '')
         self.stream_producer = StreamProducer()
         self.producer_topic = algorithm_request_channel
         self.event_manager_obj = event_manager_obj
+        self.loop = loop
 
     async def send_order(self, **kwargs):
         return await self.do_job("send_order", **kwargs)
@@ -28,7 +29,7 @@ class BrokerService:
         event = await self.event_manager_obj.get_new_event(
             event_type=EventTypes.ALGORITHM_REQUEST_EVENT,
             event_topic=EventTypes.ALGORITHM_REQUEST_EVENT + event_id,
-            event_id=event_id)
+            event_id=event_id, loop=self.loop)
         self.stream_producer.send(self.producer_topic, {
             AlgorithmRequest.JOB_ID: event.EVENT_ID,
             AlgorithmRequest.JOB: job,

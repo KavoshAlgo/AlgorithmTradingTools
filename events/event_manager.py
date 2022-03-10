@@ -17,14 +17,14 @@ class EventManager:
     def start(self):
         self.event_examiner.start()
 
-    async def get_new_event(self, event_type: str, event_topic: str, event_id=None) -> Event:
+    async def get_new_event(self, event_type: str, event_topic: str, loop, event_id=None) -> Event:
         """
         If event_id is None then generate an id for it the make an instance of Event for it and call add_topic_event_into_examiner
         :return: event
         """
         if not event_id:
             event_id = self.generate_event_id()
-        event = Event(event_id=event_id, event_type=event_type, event_topic=event_topic)
+        event = Event(event_id=event_id, event_type=event_type, event_topic=event_topic, loop=loop)
         await self.add_topic_event_into_examiner(event)
         return event
 

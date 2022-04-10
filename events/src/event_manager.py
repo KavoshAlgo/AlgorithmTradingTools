@@ -4,9 +4,9 @@ import time
 
 from monitoring.src.logger import Logger
 
-from events.config import EventManagerConfig
-from events.event_examiner import EventExaminer
-from events.event import Event
+from events.src.config import EventManagerConfig
+from events.src.event_examiner import EventExaminer
+from events.src.event import Event
 
 
 class EventManager:

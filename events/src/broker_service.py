@@ -1,8 +1,8 @@
 from streaming.src.stream_producer import StreamProducer
 from monitoring.src.logger import Logger
 from enums.event_types import EventTypes
-from events.event_manager import EventManager
-from events.event import Event
+from events.src.event_manager import EventManager
+from events.src.event import Event
 from enums.algorithm_request import AlgorithmRequest
 
 

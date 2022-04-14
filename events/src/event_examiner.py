@@ -9,6 +9,7 @@ from enums.order import Order
 from enums.algorithm_request import AlgorithmRequest
 from enums.portfolio import Portfolio
 
+
 class EventExaminer:
     def __init__(self, market_channel, user_data_channel, username):
         self.market_channel_consumer = StreamConsumer(market_channel)
@@ -53,7 +54,8 @@ class EventExaminer:
                     events = await self.remove_topic_events(topic)
                     await self.trigger_topics_events(events, item)
                 else:
-                    print("Missed Event in examine_events_market_channel")
+                    # print("Missed Event in examine_events_market_channel")
+                    pass
 
     async def examine_user_data_channel_events(self):
         while True:
@@ -71,7 +73,7 @@ class EventExaminer:
                     events = await self.remove_topic_events(topic)
                     await self.trigger_topics_events(events, item)
                 else:
-                    print("Missed Event in examine_events_account_data_channel")
+                    # print("Missed Event in examine_events_account_data_channel")
                     if EventTypes.ACCOUNT_ORDER_EVENT in topic:
                         self.cache_orders[topic] = item
 

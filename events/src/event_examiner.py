@@ -7,7 +7,7 @@ from enums.orderbooks import Orderbooks
 from enums.event_types import EventTypes
 from enums.order import Order
 from enums.algorithm_request import AlgorithmRequest
-
+from enums.portfolio import Portfolio
 
 class EventExaminer:
     def __init__(self, market_channel, user_data_channel, username):
@@ -63,7 +63,7 @@ class EventExaminer:
                 if item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ACCOUNT_ORDER_EVENT:
                     topic = item[AlgorithmRequest.EVENT_TYPE] + str(item[Order.ORDER_ID])
                 elif item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ACCOUNT_PORTFOLIO_EVENT:
-                    topic = item[AlgorithmRequest.EVENT_TYPE] + self.username
+                    topic = item[AlgorithmRequest.EVENT_TYPE] + item[Portfolio.SYMBOL]
                 elif item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ALGORITHM_REQUEST_EVENT:
                     topic = item[AlgorithmRequest.EVENT_TYPE] + str(item[AlgorithmRequest.JOB_ID])
 

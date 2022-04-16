@@ -4,14 +4,14 @@ import time
 
 from monitoring.src.logger import Logger
 
-from events.config import EventManagerConfig
-from events.event_examiner import EventExaminer
-from events.event import Event
+from events.src.config import EventManagerConfig
+from events.src.event_examiner import EventExaminer
+from events.src.event import Event
 
 
 class EventManager:
-    def __init__(self, market_channel_name, account_data_channel_name, account_username):
-        self.event_examiner = EventExaminer(market_channel_name, account_data_channel_name, account_username)
+    def __init__(self, market_channel, user_data_channel, username):
+        self.event_examiner = EventExaminer(market_channel, user_data_channel, username)
         self.logger = Logger(False, '')
 
     def start(self):

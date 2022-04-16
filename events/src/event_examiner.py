@@ -2,7 +2,7 @@ import asyncio
 import threading
 
 from streaming.src.stream_consumer import StreamConsumer
-from events.event import Event
+from events.src.event import Event
 from enums.orderbooks import Orderbooks
 from enums.event_types import EventTypes
 from enums.order import Order
@@ -10,33 +10,41 @@ from enums.algorithm_request import AlgorithmRequest
 
 
 class EventExaminer:
-    def __init__(self, market_channel_name, account_data_channel_name, account_username):
-        self.market_channel_consumer = StreamConsumer(market_channel_name)
-        self.account_data_channel_consumer = StreamConsumer(account_data_channel_name)
-        self.account_username = account_username
+    def __init__(self, market_channel, user_data_channel, username):
+        self.market_channel_consumer = StreamConsumer(market_channel)
+        self.user_data_channel_consumer = StreamConsumer(user_data_channel)
+        self.username = username
         self.topics_events = dict()
         self.cache_orders = dict()
         self.lock = asyncio.Lock()
-        self.loop = None
-        self.loop_second = None
+        self.user_data_channel_loop = None
+        self.market_channel_loop = None
 
     def start(self):
-        threading.Thread(name="examine_events_account_data_channel_loop", target=self.create_loop, daemon=False).start()
-        threading.Thread(name="examine_events_market_channel_loop", target=self.create_second_loop, daemon=False).start()
+        threading.Thread(
+            name="examine_user_data_channel_loop",
+            target=self.create_user_data_channel_loop,
+            daemon=False
+        ).start()
+        threading.Thread(
+            name="examine_market_channel_loop",
+            target=self.create_market_channel_loop,
+            daemon=False
+        ).start()
 
-    def create_loop(self):
-        self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.loop)
-        asyncio.ensure_future(self.examine_events_account_data_channel())
-        self.loop.run_forever()
+    def create_user_data_channel_loop(self):
+        self.user_data_channel_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.user_data_channel_loop)
+        asyncio.ensure_future(self.examine_user_data_channel_events())
+        self.user_data_channel_loop.run_forever()
 
-    def create_second_loop(self):
-        self.loop_second = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.loop_second)
-        asyncio.ensure_future(self.examine_events_market_channel())
-        self.loop_second.run_forever()
+    def create_market_channel_loop(self):
+        self.market_channel_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.market_channel_loop)
+        asyncio.ensure_future(self.examine_market_channel_events())
+        self.market_channel_loop.run_forever()
 
-    async def examine_events_market_channel(self):
+    async def examine_market_channel_events(self):
         while True:
             data = self.market_channel_consumer.consume()
             for item in data:
@@ -47,15 +55,15 @@ class EventExaminer:
                 else:
                     print("Missed Event in examine_events_market_channel")
 
-    async def examine_events_account_data_channel(self):
+    async def examine_user_data_channel_events(self):
         while True:
-            data = self.account_data_channel_consumer.consume()
+            data = self.user_data_channel_consumer.consume()
             for item in data:
                 topic = None
                 if item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ACCOUNT_ORDER_EVENT:
                     topic = item[AlgorithmRequest.EVENT_TYPE] + str(item[Order.ORDER_ID])
                 elif item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ACCOUNT_PORTFOLIO_EVENT:
-                    topic = item[AlgorithmRequest.EVENT_TYPE] + self.account_username
+                    topic = item[AlgorithmRequest.EVENT_TYPE] + self.username
                 elif item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ALGORITHM_REQUEST_EVENT:
                     topic = item[AlgorithmRequest.EVENT_TYPE] + str(item[AlgorithmRequest.JOB_ID])
 
@@ -87,11 +95,3 @@ class EventExaminer:
         async with self.lock:
             events = self.topics_events.pop(topic)
             return events
-
-    # TODO: ignore these two functions for now
-    def tag_orders_on_orderbook(self):
-        pass
-
-    def update_active_orders(self):
-        pass
-

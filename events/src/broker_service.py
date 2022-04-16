@@ -1,17 +1,16 @@
 from streaming.src.stream_producer import StreamProducer
 from monitoring.src.logger import Logger
 from enums.event_types import EventTypes
-from events.event_manager import EventManager
-from events.event import Event
 from enums.algorithm_request import AlgorithmRequest
+from events.src.event_manager import EventManager
+from events.src.event import Event
 
 
 class BrokerService:
-    def __init__(self, algorithm_request_channel: str, event_manager_obj: EventManager, loop):
-
+    def __init__(self, user_request_channel: str, event_manager_obj: EventManager, loop):
         self.logger = Logger(False, '')
         self.stream_producer = StreamProducer()
-        self.producer_topic = algorithm_request_channel
+        self.producer_topic = user_request_channel
         self.event_manager_obj = event_manager_obj
         self.loop = loop
 

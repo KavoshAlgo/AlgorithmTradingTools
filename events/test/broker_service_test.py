@@ -1,5 +1,4 @@
 import asyncio
-import time
 import threading
 
 from monitoring.src.logger import Logger
@@ -10,10 +9,6 @@ from enums.order import Order
 from events.src.event_manager import EventManager
 from events.src.broker_service import BrokerService
 from storage.redis.src.redis import Redis
-
-# logger configuration
-TEST_LOGGER = True
-TEST_LOGGER_PATH = ""
 
 
 class BrokerServiceTest:
@@ -32,7 +27,7 @@ class BrokerServiceTest:
         self.user_data_channel = self.broker_name + RedisEnums.Stream.USER_DATA + self.username
         self.user_request_channel = self.broker_name + RedisEnums.Stream.USER_REQUEST + self.username
         # essential objects instances
-        self.logger = Logger(TEST_LOGGER, TEST_LOGGER_PATH)
+        self.logger = Logger(True, "")
         self.redis = Redis()
         self.loop = asyncio.new_event_loop()
         self.event_manager = EventManager(
@@ -49,24 +44,47 @@ class BrokerServiceTest:
         self.event_manager.start()
 
     def start(self):
+        """
+        starting tests on destination broker
+        creating a thread on portfolio
+        and send a test order
+        :return:
+        """
         threading.Thread(
             name="start_portfolio_event_test",
-            target=self.start_portfolio_event_test,
+            target=self.start_user_data_event_test,
             daemon=False
         ).start()
+        self.loop.create_task(self.send_test_order_and_cancel())
 
-    def start_portfolio_event_test(self):
+    def start_user_data_event_test(self):
         asyncio.set_event_loop(self.loop)
         asyncio.ensure_future(self.get_portfolio_event())
         self.loop.run_forever()
 
     async def get_portfolio_event(self):
-        self.logger.info("starting portfolio ")
+        self.logger.info("Starting portfolio event tester")
         event = await self.event_manager.get_new_event(
             event_type=EventTypes.ACCOUNT_PORTFOLIO_EVENT,
             event_topic=EventTypes.ACCOUNT_PORTFOLIO_EVENT + "IRT",
             loop=self.loop)
         while True:
             await event.wait()
-            self.logger.success(event.EVENT_ID + event.EVENT_TOPIC + str(event.EVENT_VALUE))
+            self.logger.success(event.EVENT_TOPIC + ": " + str(event.EVENT_VALUE))
             event.clear()
+            await self.event_manager.add_topic_event_into_examiner(event)
+
+    async def send_test_order_and_cancel(self):
+        self.logger.info("Trying to send a test order")
+        send_order_event = await self.broker_service.send_order(**self.send_order_detail)
+        await send_order_event.wait()
+        self.logger.success(send_order_event.EVENT_ID + ": " + str(send_order_event.EVENT_VALUE))
+        if send_order_event.EVENT_VALUE['status'] == "ok":
+            order_id = send_order_event.EVENT_VALUE['response'][Order.ORDER_ID]
+            await asyncio.sleep(2)
+            self.logger.info("Trying to cancel the order")
+            cancel_order_event = await self.broker_service.cancel_order(order_id=order_id)
+            await cancel_order_event.wait()
+            self.logger.success(cancel_order_event.EVENT_TOPIC + ": " + str(send_order_event.EVENT_VALUE))
+        else:
+            self.logger.error(send_order_event.EVENT_VALUE['response'])

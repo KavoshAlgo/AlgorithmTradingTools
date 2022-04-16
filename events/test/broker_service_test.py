@@ -53,10 +53,14 @@ class BrokerServiceTest:
         """
         asyncio.set_event_loop(self.loop)
         asyncio.ensure_future(self.get_portfolio_event())
-        self.loop.create_task(self.send_test_order_and_cancel())
+        self.loop.create_task(self.test_executor())
         self.loop.run_forever()
 
     async def get_portfolio_event(self):
+        """
+        detect changes on ACCOUNT_PORTFOLIO_EVENT
+        :return:
+        """
         self.logger.info("Starting portfolio event notifier")
         event = await self.event_manager.get_new_event(
             event_type=EventTypes.ACCOUNT_PORTFOLIO_EVENT,
@@ -69,6 +73,10 @@ class BrokerServiceTest:
             await self.event_manager.add_topic_event_into_examiner(event)
 
     async def get_order_event(self, order_id):
+        """
+        detect changes on ACCOUNT_ORDER_EVENT
+        :return:
+        """
         self.logger.info("Starting order event notifier")
         event = await self.event_manager.get_new_event(
             event_type=EventTypes.ACCOUNT_ORDER_EVENT,
@@ -80,7 +88,11 @@ class BrokerServiceTest:
             event.clear()
             await self.event_manager.add_topic_event_into_examiner(event)
 
-    async def send_test_order_and_cancel(self):
+    async def test_executor(self):
+        """
+        executing the incoming test scenarios.
+        :return:
+        """
         self.logger.info("Trying to send a test order")
         send_order_event = await self.broker_service.send_order(**self.send_order_detail)
         await send_order_event.wait()

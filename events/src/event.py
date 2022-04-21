@@ -29,3 +29,7 @@ class Event(asyncio.Event):
         """
         self.EVENT_VALUE = value
         self.loop.call_soon_threadsafe(self.set)
+
+    async def wait_clear(self):
+        await self.wait()
+        self.clear()

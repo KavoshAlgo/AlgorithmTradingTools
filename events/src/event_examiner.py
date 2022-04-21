@@ -51,7 +51,7 @@ class EventExaminer:
             for item in data:
                 topic = item[AlgorithmRequest.EVENT_TYPE] + item[Orderbooks.MARKET]
                 if topic in self.topics_events:
-                    events = await self.remove_topic_events(topic)
+                    events = self.topics_events[topic]
                     await self.trigger_topics_events(events, item)
                 else:
                     # print("Missed Event in examine_events_market_channel")
@@ -70,7 +70,7 @@ class EventExaminer:
                     topic = item[AlgorithmRequest.EVENT_TYPE] + str(item[AlgorithmRequest.JOB_ID])
 
                 if topic and topic in self.topics_events:
-                    events = await self.remove_topic_events(topic)
+                    events = self.topics_events[topic]
                     await self.trigger_topics_events(events, item)
                 else:
                     # print("Missed Event in examine_events_account_data_channel")

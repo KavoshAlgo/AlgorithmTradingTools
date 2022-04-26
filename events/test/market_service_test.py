@@ -10,7 +10,7 @@ from storage.redis.src.redis import Redis
 
 class Market_service_test:
     def __init__(self, username):
-        self.market_name = ""
+        self.market_name = "kucoin"
         self.market_chanel = self.market_name + RedisEnums.Stream.MARKET
         self.user_data_chanel = self.market_name + RedisEnums.Stream.USER_DATA + username
         self.loop = asyncio.new_event_loop()
@@ -31,14 +31,13 @@ class Market_service_test:
     async def get_orderbook_event(self):
         self.logger.info("Time to raise orderbook event")
         event = await self.event_manager.get_new_event(
-            event_topic=EventTypes.ORDERBOOK_EVENT + "",
+            event_topic=EventTypes.ORDERBOOK_EVENT + "BTCUSDT",
             event_type=EventTypes.ORDERBOOK_EVENT,
             loop=self.loop)
         while True:
-            await event.wait()
+            await event.wait_clear()
             self.logger.info(event.EVENT_VALUE)
-            event.clear()
-            await self.event_manager.add_topic_event_into_examiner(event=event)
+
 
 if __name__ == '__main__':
     ms = Market_service_test(username="TEST")

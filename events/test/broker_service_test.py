@@ -1,5 +1,4 @@
 import asyncio
-import threading
 
 from monitoring.src.logger import Logger
 from enums.redis_enum import RedisEnums
@@ -16,7 +15,7 @@ class BrokerServiceTest:
         """
         initiating broker test class in order to test events flow on project
         :param broker_name: the broker that the test is going to run on it
-        :param username: the user name of account on the broker
+        :param username: the username of account on the broker
         """
         # user and broker configuration
         self.broker_name = broker_name

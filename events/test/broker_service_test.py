@@ -63,7 +63,7 @@ class BrokerServiceTest:
         self.logger.info("Starting portfolio event notifier")
         event = await self.event_manager.get_new_event(
             event_type=EventTypes.ACCOUNT_PORTFOLIO_EVENT,
-            event_topic=EventTypes.ACCOUNT_PORTFOLIO_EVENT + "IRT",
+            event_topic=EventTypes.ACCOUNT_PORTFOLIO_EVENT + "",
             loop=self.loop)
         while True:
             await event.wait()
@@ -93,7 +93,7 @@ class BrokerServiceTest:
         :return:
         """
         self.logger.info("Trying to send a test order")
-        send_order_event = await self.broker_service.send_order(**self.send_order_detail)
+        send_order_event = await self.broker_service.send_order(self.loop, **self.send_order_detail)
         await send_order_event.wait()
         self.logger.success(send_order_event.EVENT_ID + ": " + str(send_order_event.EVENT_VALUE))
         if self.test_scenario == "order":
@@ -102,7 +102,7 @@ class BrokerServiceTest:
                 asyncio.ensure_future(self.get_order_event(order_id))
                 await asyncio.sleep(5)
                 self.logger.info("Trying to cancel the order")
-                cancel_order_event = await self.broker_service.cancel_order(order_id=order_id)
+                cancel_order_event = await self.broker_service.cancel_order(order_id=order_id, loop=self.loop)
                 await cancel_order_event.wait()
                 self.logger.success(cancel_order_event.EVENT_TOPIC + ": " + str(send_order_event.EVENT_VALUE))
             else:
@@ -113,6 +113,24 @@ class BrokerServiceTest:
                 asyncio.ensure_future(self.get_order_event(order_id))
             else:
                 self.logger.error(send_order_event.EVENT_VALUE['response'])
+        elif self.test_scenario == "edit":
+            if send_order_event.EVENT_VALUE['status'] == "ok":
+                order_id = send_order_event.EVENT_VALUE['response'][Order.ORDER_ID]
+                asyncio.ensure_future(self.get_order_event(order_id))
+                await asyncio.sleep(5)
+                edit_order_event = await self.broker_service.edit_order(loop=self.loop,
+                                                                        **{
+                                                                            "order_id": order_id,
+                                                                            Order.MARKET: "IRK1A0631101",
+                                                                            Order.SIDE: Order.OrderSide.BUY,
+                                                                            Order.PRICE: 0,
+                                                                            Order.VOLUME: 0})
+
+                await edit_order_event.wait()
+                self.logger.success(edit_order_event.EVENT_ID + ": " + str(edit_order_event.EVENT_VALUE))
+                self.logger.info("Edit Order is Done!")
+            else:
+                self.logger.error("Edit order have a Problem check it.")
 
 
 if __name__ == '__main__':
@@ -127,12 +145,12 @@ if __name__ == '__main__':
     bst = BrokerServiceTest(
         broker_name="",
         username="",
-        test_scenario="order",
+        test_scenario="",
         **{
-            Order.MARKET: "USDTIRT",
+            Order.MARKET: "",
             Order.SIDE: Order.OrderSide.BUY,
-            Order.PRICE: 277000,
-            Order.VOLUME: 15
+            Order.PRICE: 0,
+            Order.VOLUME: 0
         }
     )
     bst.start()

@@ -22,9 +22,10 @@ class StreamProducer:
         self.logger.info("create a connection to Redis Server as a producer ....")
         self.logger.info("producer connection is established")
 
-    def send(self, topic, message):
+    def send(self, topic, message, maxlen=None):
         self.redis_connection.xadd(
             topic,
-            {"data": json.dumps(message)}
+            {"data": json.dumps(message)},
+            maxlen=maxlen
         )
 

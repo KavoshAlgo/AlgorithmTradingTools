@@ -161,7 +161,8 @@ def round_truncate(number, step, _type="step"):
         temp = number / step
         output = math.floor(temp) * step
         if step < 1:
-            return float(format(output, '.%sf' % abs(math.floor(math.log10(step)))))
+            import decimal
+            return decimal.Decimal(format(output, '.%sf' % abs(math.floor(math.log10(step)))))
         return output
 
 

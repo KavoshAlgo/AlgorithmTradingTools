@@ -49,7 +49,8 @@ class EventExaminer:
         while True:
             data = self.market_channel_consumer.consume()
             for item in data:
-                topic = item[AlgorithmRequest.EVENT_TYPE] + item[Orderbooks.MARKET]
+                # topic = item[AlgorithmRequest.EVENT_TYPE] + item[Orderbooks.MARKET]
+                topic = item[AlgorithmRequest.EVENT_TYPE]
                 if topic in self.topics_events:
                     events = self.topics_events[topic]
                     await self.trigger_topics_events(events, item)

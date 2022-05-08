@@ -49,8 +49,7 @@ class EventExaminer:
         while True:
             data = self.market_channel_consumer.consume()
             for item in data:
-                # topic = item[AlgorithmRequest.EVENT_TYPE] + item[Orderbooks.MARKET]
-                topic = item[AlgorithmRequest.EVENT_TYPE]
+                topic = item[AlgorithmRequest.EVENT_TYPE] + item[Orderbooks.MARKET]
                 if topic in self.topics_events:
                     events = self.topics_events[topic]
                     await self.trigger_topics_events(events, item)
@@ -66,8 +65,7 @@ class EventExaminer:
                 if item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ACCOUNT_ORDER_EVENT:
                     topic = item[AlgorithmRequest.EVENT_TYPE] + str(item[Order.ORDER_ID])
                 elif item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ACCOUNT_PORTFOLIO_EVENT:
-                    # topic = item[AlgorithmRequest.EVENT_TYPE] + item[Portfolio.SYMBOL]
-                    topic = item[AlgorithmRequest.EVENT_TYPE]
+                    topic = item[AlgorithmRequest.EVENT_TYPE] + item[Portfolio.SYMBOL]
                 elif item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ALGORITHM_REQUEST_EVENT:
                     topic = item[AlgorithmRequest.EVENT_TYPE] + str(item[AlgorithmRequest.JOB_ID])
 

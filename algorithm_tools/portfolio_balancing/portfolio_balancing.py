@@ -115,9 +115,9 @@ class PortfolioBalancing:
         )
         await send_order_event.wait()
         if send_order_event.EVENT_VALUE['status'] == 'ok':
-            self.logger.warning('balance USDT-IRT with order : %s' % send_order_event.EVENT_VALUE['order'])
+            self.logger.warning('balance USDT-IRT with order : %s' % send_order_event.EVENT_VALUE['response'])
         else:
-            self.logger.error('balance USDT-IRT can`t send order : %s ' % send_order_event.EVENT_VALUE['order'])
+            self.logger.error('balance USDT-IRT can`t send order : %s ' % send_order_event.EVENT_VALUE['response'])
 
     def change_usdtirt(self, irt_portfolio):
         """ change TOMAN to USDT """

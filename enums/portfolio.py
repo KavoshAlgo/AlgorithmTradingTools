@@ -5,6 +5,8 @@ class Portfolio:
     TOTAL_VOL = 'total_vol'
     SYMBOL = 'symbol'
     EVENT_TYPE = 'event_type'
+    IRT_VALUE = "irt_value"
+    USD_VALUE = "usd_value"
 
 
 class FuturePortfolio(Portfolio):

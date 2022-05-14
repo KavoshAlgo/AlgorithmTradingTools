@@ -89,7 +89,7 @@ class PortfolioBalancing:
             market=self.market,
             side=side,
             price=price,
-            vol=vol
+            volume=vol
         )
         if status == 'ok':
             self.logger.warning('balance USDT-IRT with order : %s' % order)

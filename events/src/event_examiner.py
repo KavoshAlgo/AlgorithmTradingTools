@@ -7,6 +7,7 @@ from enums.orderbooks import Orderbooks
 from enums.event_types import EventTypes
 from enums.order import Order
 from enums.algorithm_request import AlgorithmRequest
+from enums.portfolio import Portfolio
 
 
 class EventExaminer:
@@ -50,10 +51,11 @@ class EventExaminer:
             for item in data:
                 topic = item[AlgorithmRequest.EVENT_TYPE] + item[Orderbooks.MARKET]
                 if topic in self.topics_events:
-                    events = await self.remove_topic_events(topic)
+                    events = self.topics_events[topic]
                     await self.trigger_topics_events(events, item)
                 else:
-                    print("Missed Event in examine_events_market_channel")
+                    # print("Missed Event in examine_events_market_channel")
+                    pass
 
     async def examine_user_data_channel_events(self):
         while True:
@@ -63,15 +65,15 @@ class EventExaminer:
                 if item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ACCOUNT_ORDER_EVENT:
                     topic = item[AlgorithmRequest.EVENT_TYPE] + str(item[Order.ORDER_ID])
                 elif item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ACCOUNT_PORTFOLIO_EVENT:
-                    topic = item[AlgorithmRequest.EVENT_TYPE] + self.username
+                    topic = item[AlgorithmRequest.EVENT_TYPE] + item[Portfolio.SYMBOL]
                 elif item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ALGORITHM_REQUEST_EVENT:
                     topic = item[AlgorithmRequest.EVENT_TYPE] + str(item[AlgorithmRequest.JOB_ID])
 
                 if topic and topic in self.topics_events:
-                    events = await self.remove_topic_events(topic)
+                    events = self.topics_events[topic]
                     await self.trigger_topics_events(events, item)
                 else:
-                    print("Missed Event in examine_events_account_data_channel")
+                    # print("Missed Event in examine_events_account_data_channel")
                     if EventTypes.ACCOUNT_ORDER_EVENT in topic:
                         self.cache_orders[topic] = item
 

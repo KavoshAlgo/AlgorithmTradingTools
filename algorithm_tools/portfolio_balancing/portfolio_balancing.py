@@ -1,5 +1,6 @@
 import threading
 import time
+import asyncio
 
 from monitoring.src.logger import Logger
 
@@ -13,7 +14,7 @@ from enums.order import Order
 
 class PortfolioBalancing:
     def __init__(self, username, broker_object, broker_name, trade_value_threshold=20, portfolio_balance_threshold=200,
-                 threshold_factor=2, vol_factor=0.5, extra_price=100, execution_wait_time=120):
+                 threshold_factor=2, vol_factor=0.5, extra_price=100, execution_wait_time=120, is_event_base=False):
         """ initial class essential objects and agents """
         self.redis = Redis()
         self.logger = Logger(False, '')
@@ -31,6 +32,9 @@ class PortfolioBalancing:
         self.market = 'USDTIRT'
         self.USDT = 'USDT'
         self.IRT = 'IRT'
+        """ Event base """
+        self.is_event_base = is_event_base
+        self.loop = None
 
     def start(self):
         """ create one thread on main method """
@@ -85,16 +89,35 @@ class PortfolioBalancing:
 
     def send_order(self, side, price, vol):
         """ send order method """
-        order, status = self.broker.send_order(
+        if not self.is_event_base:
+            order, status = self.broker.send_order(
+                market=self.market,
+                side=side,
+                price=price,
+                volume=vol
+            )
+            if status == 'ok':
+                self.logger.warning('balance USDT-IRT with order : %s' % order)
+            else:
+                self.logger.error('balance USDT-IRT can`t send order : %s ' % order)
+        elif self.is_event_base:
+            asyncio.run(self.send_order_event(price=price, side=side, vol=vol))
+
+    async def send_order_event(self, side, price, vol):
+        """ send_order_event use for Evnet base program """
+        self.loop = asyncio.get_event_loop()
+        send_order_event = await self.broker.send_order(
             market=self.market,
             side=side,
             price=price,
-            volume=vol
+            volume=vol,
+            loop=self.loop
         )
-        if status == 'ok':
-            self.logger.warning('balance USDT-IRT with order : %s' % order)
+        await send_order_event.wait()
+        if send_order_event.EVENT_VALUE['status'] == 'ok':
+            self.logger.warning('balance USDT-IRT with order : %s' % send_order_event.EVENT_VALUE['order'])
         else:
-            self.logger.error('balance USDT-IRT can`t send order : %s ' % order)
+            self.logger.error('balance USDT-IRT can`t send order : %s ' % send_order_event.EVENT_VALUE['order'])
 
     def change_usdtirt(self, irt_portfolio):
         """ change TOMAN to USDT """

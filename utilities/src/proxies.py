@@ -33,7 +33,9 @@ class Proxies:
                 response = requests.get(cls.BASE_URL, headers={"Authorization": cls.API_KEY})
                 if response.status_code == 200:
                     for item in response.json()['results']:
-                        cls.PROXIES.append(Proxies.Proxy(item))
+                        proxy = Proxies.Proxy(item)
+                        if proxy.COUNTRY != "US":
+                            cls.PROXIES.append(proxy)
                     break
                 else:
                     raise Exception("%s-%s" % (response.status_code, response.text))

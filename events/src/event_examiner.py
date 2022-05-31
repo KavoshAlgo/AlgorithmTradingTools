@@ -15,7 +15,8 @@ class EventExaminer:
         self.market_channel_consumer = StreamConsumer(market_channel)
         self.user_data_channel_consumer = StreamConsumer(user_data_channel)
         self.username = username
-        self.topics_events = dict()
+        self.orderbooks_topics_events = dict()
+        self.user_topics_events = dict()
         self.cache_orders = dict()
         self.lock = asyncio.Lock()
         self.user_data_channel_loop = None
@@ -47,19 +48,13 @@ class EventExaminer:
 
     async def examine_market_channel_events(self):
         while True:
-            data = self.market_channel_consumer.consume()
+            data = await self.market_channel_consumer.consume()
             for item in data:
-                topic = item[AlgorithmRequest.EVENT_TYPE] + item[Orderbooks.MARKET]
-                if topic in self.topics_events:
-                    events = self.topics_events[topic]
-                    await self.trigger_topics_events(events, item)
-                else:
-                    # print("Missed Event in examine_events_market_channel")
-                    pass
+                asyncio.ensure_future(self.trigger_orderbook_topics_events(item))
 
     async def examine_user_data_channel_events(self):
         while True:
-            data = self.user_data_channel_consumer.consume()
+            data = await self.user_data_channel_consumer.consume()
             for item in data:
                 topic = None
                 if item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ACCOUNT_ORDER_EVENT:
@@ -69,9 +64,9 @@ class EventExaminer:
                 elif item[AlgorithmRequest.EVENT_TYPE] == EventTypes.ALGORITHM_REQUEST_EVENT:
                     topic = item[AlgorithmRequest.EVENT_TYPE] + str(item[AlgorithmRequest.JOB_ID])
 
-                if topic and topic in self.topics_events:
-                    events = self.topics_events[topic]
-                    await self.trigger_topics_events(events, item)
+                if topic and topic in self.user_topics_events:
+                    events = self.user_topics_events[topic]
+                    asyncio.ensure_future(self.trigger_topics_events(events, item))
                 else:
                     # print("Missed Event in examine_events_account_data_channel")
                     if EventTypes.ACCOUNT_ORDER_EVENT in topic:
@@ -79,21 +74,27 @@ class EventExaminer:
 
     async def add_topic_event(self, event: Event):
         async with self.lock:
-            if event.EVENT_TOPIC in self.topics_events.keys():
-                self.topics_events[event.EVENT_TOPIC].append(event)
+            if event.EVENT_TYPE == EventTypes.ORDERBOOK_EVENT:
+                topics_events = self.orderbooks_topics_events
+            else:
+                topics_events = self.user_topics_events
+            if event.EVENT_TOPIC in topics_events.keys():
+                topics_events[event.EVENT_TOPIC].append(event)
             else:
                 if event.EVENT_TOPIC in self.cache_orders:
                     await self.trigger_topics_events([event], self.cache_orders[event.EVENT_TOPIC])
                     self.cache_orders.pop(event.EVENT_TOPIC)
                 else:
-                    self.topics_events[event.EVENT_TOPIC] = [event]
+                    topics_events[event.EVENT_TOPIC] = [event]
 
     @staticmethod
     async def trigger_topics_events(events, value):
         for event in events:
             event.trigger_event(value)
 
-    async def remove_topic_events(self, topic):
-        async with self.lock:
-            events = self.topics_events.pop(topic)
-            return events
+    async def trigger_orderbook_topics_events(self, item):
+        topic = item[AlgorithmRequest.EVENT_TYPE] + item[Orderbooks.MARKET]
+        if topic in self.orderbooks_topics_events:
+            for event in self.orderbooks_topics_events[topic]:
+                event.trigger_event(item)
+

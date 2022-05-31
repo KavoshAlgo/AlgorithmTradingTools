@@ -29,7 +29,7 @@ class BrokerService:
             event_type=EventTypes.ALGORITHM_REQUEST_EVENT,
             event_topic=EventTypes.ALGORITHM_REQUEST_EVENT + event_id,
             event_id=event_id, loop=loop)
-        self.stream_producer.send(self.producer_topic, {
+        await self.stream_producer.send(self.producer_topic, {
             AlgorithmRequest.JOB_ID: event.EVENT_ID,
             AlgorithmRequest.JOB: job,
             AlgorithmRequest.JOB_ARGS: kwargs

@@ -1,5 +1,6 @@
 import json
 import redis
+import aioredis
 import time
 
 from monitoring.src.logger import Logger
@@ -27,22 +28,26 @@ class StreamConsumer:
         elif self.receive_mode == ReceiveMode.LATEST:
             self.id_dict = {self.topic: bytes("$", "utf-8")}
         self.logger.info("create a connection to redis channel as a consumer ....")
-        self.redis_connection = redis.Redis(
-            host=StreamConfig.REDIS_SERVER,
+        # self.redis_connection = redis.Redis(
+        #     host=StreamConfig.REDIS_SERVER,
+        #     port=StreamConfig.REDIS_PORT,
+        #     password=StreamConfig.REDIS_PASSWORD)
+        self.redis_connection = aioredis.from_url(
+            StreamConfig.REDIS_SERVER,
             port=StreamConfig.REDIS_PORT,
-            password=StreamConfig.REDIS_PASSWORD)
+            password=StreamConfig.REDIS_PASSWORD
+        )
         self.logger.info("consumer connection is established")
 
-    def consume(self):
-        while True:
-            data = self.redis_connection.xread(
-                self.id_dict,
-                StreamConfig.MAX_EVENTS_COUNT,
-                block=StreamConfig.CONSUMER_BLOCK_TIMEOUT
-            )
-            if len(data) > 0:
-                self.id_dict = {self.topic: list(data[0][1][-1])[0]}
-                events = []
-                for i in range(len(list(data[0][1]))):
-                    events.append(json.loads(list(data[0][1][i])[1][b"data"]))
-                return events
+    async def consume(self):
+        data = await self.redis_connection.xread(
+            self.id_dict,
+            StreamConfig.MAX_EVENTS_COUNT,
+            block=StreamConfig.CONSUMER_BLOCK_TIMEOUT
+        )
+        if len(data) > 0:
+            self.id_dict = {self.topic: list(data[0][1][-1])[0]}
+            events = []
+            for i in range(len(list(data[0][1]))):
+                events.append(json.loads(list(data[0][1][i])[1][b"data"]))
+            return events

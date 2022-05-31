@@ -51,3 +51,4 @@ class StreamConsumer:
             for i in range(len(list(data[0][1]))):
                 events.append(json.loads(list(data[0][1][i])[1][b"data"]))
             return events
+        return []

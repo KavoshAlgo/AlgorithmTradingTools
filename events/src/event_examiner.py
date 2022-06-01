@@ -49,8 +49,11 @@ class EventExaminer:
     async def examine_market_channel_events(self):
         while True:
             data = await self.market_channel_consumer.consume()
-            for item in data:
-                asyncio.ensure_future(self.trigger_orderbook_topics_events(item))
+            view_markets = []
+            for item in reversed(data):
+                if item[Orderbooks.MARKET] not in view_markets:
+                    asyncio.ensure_future(self.trigger_orderbook_topics_events(item))
+                    view_markets.append(item[Orderbooks.MARKET])
 
     async def examine_user_data_channel_events(self):
         while True:

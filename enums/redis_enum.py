@@ -1,6 +1,7 @@
 class RedisEnums:
     class Hashset:
         ORDERS = "_orders_"
+        OPEN_ORDERS = "_open_orders_"
         TRADES = "_trades_"
         PORTFOLIO = "_portfolio_"
 

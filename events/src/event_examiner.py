@@ -86,8 +86,7 @@ class EventExaminer:
             if event.EVENT_TOPIC in self.cache_orders:
                 await self.trigger_topics_events([event], self.cache_orders[event.EVENT_TOPIC])
                 self.cache_orders.pop(event.EVENT_TOPIC)
-            else:
-                topics_events[event.EVENT_TOPIC] = [event]
+            topics_events[event.EVENT_TOPIC] = [event]
 
     @staticmethod
     async def trigger_topics_events(events, value):

@@ -94,7 +94,7 @@ class EventExaminer:
             try:
                 event.trigger_event(value)
             except RuntimeError as ex:
-                print(value + " " + ex)
+                print(str(value), ex)
 
     async def trigger_orderbook_topics_events(self, item):
         topic = item[AlgorithmRequest.EVENT_TYPE] + item[Orderbooks.MARKET]

@@ -91,11 +91,13 @@ class EventExaminer:
     @staticmethod
     async def trigger_topics_events(events, value):
         for event in events:
-            event.trigger_event(value)
+            try:
+                event.trigger_event(value)
+            except RuntimeError as ex:
+                print(value + " " + ex)
 
     async def trigger_orderbook_topics_events(self, item):
         topic = item[AlgorithmRequest.EVENT_TYPE] + item[Orderbooks.MARKET]
         if topic in self.orderbooks_topics_events:
             for event in self.orderbooks_topics_events[topic]:
                 event.trigger_event(item)
-

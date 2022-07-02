@@ -1,5 +1,4 @@
 import requests
-from datetime import datetime
 import os
 import jdatetime
 import time
@@ -7,6 +6,8 @@ import math
 import sys
 import asyncio
 import ssl
+import decimal
+from datetime import datetime
 
 SSL_PROTOCOLS = (asyncio.sslproto.SSLProtocol,)
 try:
@@ -161,7 +162,6 @@ def round_truncate(number, step, _type="step"):
         temp = number / step
         output = math.floor(temp) * step
         if step < 1:
-            import decimal
             return decimal.Decimal(format(output, '.%sf' % abs(math.floor(math.log10(step)))))
         return output
 

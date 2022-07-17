@@ -159,10 +159,11 @@ def round_truncate(number, step, _type="step"):
         stepper = 10.0 ** step
         return math.trunc(stepper * number) / stepper
     elif _type == "step":
-        temp = number / step
-        output = math.floor(temp) * step
         if step < 1:
-            return decimal.Decimal(format(output, '.%sf' % abs(math.floor(math.log10(step)))))
+            return math.floor(number * 10 ** abs(math.ceil(math.log10(step)))) / 10 ** abs(math.ceil(math.log10(step)))
+        else:
+            temp = number / step
+            output = math.floor(temp) * step
         return output
 
 

@@ -7,7 +7,9 @@ import sys
 import asyncio
 import ssl
 import decimal
+
 from datetime import datetime
+from pytz import timezone
 
 SSL_PROTOCOLS = (asyncio.sslproto.SSLProtocol,)
 try:
@@ -101,9 +103,9 @@ def check_start_programm_time(start_time, finish_time):
                 break
 
 
-def jtoday_maker(date=None, string_date=False):
+def jtoday_maker(date=None, string_date=False, time_zone='Asia/Tehran'):
     if date is None:
-        today = datetime.today()
+        today = datetime.now(tz=timezone(time_zone))
         if string_date:
             return jdatetime.datetime.fromgregorian(datetime=today).strftime("%Y-%m-%d")
         else:

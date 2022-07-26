@@ -16,6 +16,7 @@ class Order:
     class OrderStatus:
         ACTIVE = "Active"
         PARTIAL = "Partial_Filled"
+        PARTIAL_CANCELED = "Partial_Canceled"
         FILLED = "Filled"
         CANCELED = "Canceled"
 

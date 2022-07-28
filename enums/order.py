@@ -19,6 +19,7 @@ class Order:
         PARTIAL_CANCELED = "Partial_Canceled"
         FILLED = "Filled"
         CANCELED = "Canceled"
+        UNKNOWN = "Unknown"
 
     class OrderSide:
         BUY = "BUY"

@@ -20,6 +20,7 @@ class Order:
         FILLED = "Filled"
         CANCELED = "Canceled"
         UNKNOWN = "Unknown"
+        ERROR = "error"
 
     class OrderSide:
         BUY = "BUY"

@@ -1,11 +1,16 @@
 class ExchangeInfo:
-    TICK_SIZE = 'tick_size'
-    LOT = 'lot'
-    MODE = "mode"
-    COINS = 'coins'
-    MARKETS = "markets"
-    MIN_VOL = 'min_vol'
-    MIN_VALUE = 'min_value'
+    MODE = 'mode'  # MODE OF INCLUDING DECIMAL
+    TICK_SIZE = 'tick_size'  # PRICE DECIMAL
+    LOT = 'lot'  # VOLUME DECIMAL
+
+    COINS = 'coins'  # COINS OF EXCHANGE
+    MARKETS = "markets"  # MARKETS OF EXCHANGE
+
+    MIN_VOL = 'min_vol'  # MIN TRADE VOLUME
+    MIN_VALUE = 'min_value'  # MIN TRADE VALUE
+    COMMISSION = 'commission'  # COMMISSION FEE OF MARKET
+
+    """ SPECIFIC ENUMS FOR TSETMC STOCK MARKET """
     MARKET_FA = 'market_fa'
     TSETMC_LINK_ID = 'tsetmc_link_id'
     ISIN = 'isin'
@@ -13,5 +18,9 @@ class ExchangeInfo:
     MIN_PRICE_RANGE = 'min_price_range'
 
     class TruncateMode:
-        STEP = "step"
-        ROUND = "round"
+        STEP = 'step'  # E.G. 0.0001 OR 10
+        ROUND = 'round'  # E.G 5 , 6 ...
+
+    class CommissionMode:
+        MAKER = 'maker'  # COMMISSION FEE OF MAKER TRADES
+        TAKER = 'taker'  # COMMISSION FEE OF TAKER TRADES

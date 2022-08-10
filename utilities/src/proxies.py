@@ -6,7 +6,7 @@ import requests
 class Proxies:
     PROXIES = list()
     BASE_URL = "https://proxy.webshare.io/api/proxy/list/"
-    API_KEY = "ea8b78668c8943edf40839b4941b85281ca8c043"
+    API_KEY = "Token ea8b78668c8943edf40839b4941b85281ca8c043"
 
     class Proxy:
         def __init__(self, item):

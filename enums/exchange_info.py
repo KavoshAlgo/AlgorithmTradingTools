@@ -6,6 +6,8 @@ class ExchangeInfo:
     COINS = 'coins'  # COINS OF EXCHANGE
     MARKETS = "markets"  # MARKETS OF EXCHANGE
 
+    BASE_ASSET = "base_asset"
+    QUOTE_ASSET = "quote_asset"
     MIN_VOL = 'min_vol'  # MIN TRADE VOLUME
     MIN_VALUE = 'min_value'  # MIN TRADE VALUE
     COMMISSION = 'commission'  # COMMISSION FEE OF MARKET

@@ -1,4 +1,6 @@
 class Orderbooks:
+    BASE_ASSET = "base_asset"
+    QUOTE_ASSET = "quote_asset"
     MARKET = 'market'
     ID = 'id'
     ISIN = 'isin'

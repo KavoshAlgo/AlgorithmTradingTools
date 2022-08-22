@@ -1,4 +1,5 @@
 import asyncio
+import argparse
 
 from monitoring.src.logger import Logger
 from enums.event_types import EventTypes
@@ -9,10 +10,11 @@ from storage.redis.src.redis import Redis
 
 
 class Market_service_test:
-    def __init__(self, username):
-        self.market_name = "kucoin"
-        self.market_chanel = self.market_name + RedisEnums.Stream.MARKET
-        self.user_data_chanel = self.market_name + RedisEnums.Stream.USER_DATA + username
+    def __init__(self, broker, market, username="TEST"):
+        self.broker = broker
+        self.market = market
+        self.market_chanel = self.broker + RedisEnums.Stream.MARKET
+        self.user_data_chanel = self.broker + RedisEnums.Stream.USER_DATA + username
         self.loop = asyncio.new_event_loop()
         self.logger = Logger(True, '')
         self.event_manager = EventManager(
@@ -31,7 +33,7 @@ class Market_service_test:
     async def get_orderbook_event(self):
         self.logger.info("Time to raise orderbook event")
         event = await self.event_manager.get_new_event(
-            event_topic=EventTypes.ORDERBOOK_EVENT + "BTCUSDT",
+            event_topic=EventTypes.ORDERBOOK_EVENT + self.market,
             event_type=EventTypes.ORDERBOOK_EVENT,
             loop=self.loop)
         while True:
@@ -40,5 +42,9 @@ class Market_service_test:
 
 
 if __name__ == '__main__':
-    ms = Market_service_test(username="TEST")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--broker", required=True, help="broker")
+    parser.add_argument("--market", required=True, help="market")
+    args = parser.parse_args()
+    ms = Market_service_test(broker=args.broker, market=args.market)
     ms.start()

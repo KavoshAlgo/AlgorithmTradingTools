@@ -12,8 +12,12 @@ from enums.portfolio import Portfolio
 
 class EventExaminer:
     def __init__(self, market_channel, user_data_channel, username):
-        self.market_channel_consumer = StreamConsumer(market_channel)
-        self.user_data_channel_consumer = StreamConsumer(user_data_channel)
+        self.market_channel_consumer = None
+        if market_channel:
+            self.market_channel_consumer = StreamConsumer(market_channel)
+        self.user_data_channel_consumer = None
+        if user_data_channel:
+            self.user_data_channel_consumer = StreamConsumer(user_data_channel)
         self.username = username
         self.orderbooks_topics_events = dict()
         self.user_topics_events = dict()
@@ -23,16 +27,18 @@ class EventExaminer:
         self.market_channel_loop = None
 
     def start(self):
-        threading.Thread(
-            name="examine_user_data_channel_loop",
-            target=self.create_user_data_channel_loop,
-            daemon=False
-        ).start()
-        threading.Thread(
-            name="examine_market_channel_loop",
-            target=self.create_market_channel_loop,
-            daemon=False
-        ).start()
+        if self.user_data_channel_consumer:
+            threading.Thread(
+                name="examine_user_data_channel_loop",
+                target=self.create_user_data_channel_loop,
+                daemon=False
+            ).start()
+        if self.market_channel_consumer:
+            threading.Thread(
+                name="examine_market_channel_loop",
+                target=self.create_market_channel_loop,
+                daemon=False
+            ).start()
 
     def create_user_data_channel_loop(self):
         self.user_data_channel_loop = asyncio.new_event_loop()

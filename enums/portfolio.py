@@ -14,3 +14,8 @@ class FuturePortfolio(Portfolio):
     SELL_VOL = 'sell_vol'
     BUY_VOL = 'buy_vol'
     CONTRACT_ID = 'contract_id'
+
+
+class PortfolioMatrix:
+    INDEX = "index"
+    USD_VALUE = "usd_value"

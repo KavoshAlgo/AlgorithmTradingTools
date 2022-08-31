@@ -27,7 +27,3 @@ class ExchangeInfo:
     class TruncateMode:
         STEP = 'step'  # E.G. 0.0001 OR 10
         ROUND = 'round'  # E.G 5 , 6 ...
-
-    class CommissionMode:
-        MAKER = 'maker'  # COMMISSION FEE OF MAKER TRADES
-        TAKER = 'taker'  # COMMISSION FEE OF TAKER TRADES

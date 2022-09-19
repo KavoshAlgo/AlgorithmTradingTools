@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Orderbooks:
     MARKET = 'market'
     ID = 'id'
@@ -28,3 +31,16 @@ class OrderbookMatrix:
     BID_VOLUME = "bid_volume"
     BID_NET = "bid_net"
     BID_USD_VALUE = "bid_usd_value"
+
+
+ORDERBOOK_DTYPE = np.dtype([
+    (OrderbookMatrix.INDEX, np.int32),
+    (OrderbookMatrix.ASK_PRICE, np.float32),
+    (OrderbookMatrix.ASK_VOLUME, np.float32),
+    (OrderbookMatrix.ASK_NET, np.float32),
+    (OrderbookMatrix.ASK_USD_VALUE, np.float32),
+    (OrderbookMatrix.BID_PRICE, np.float32),
+    (OrderbookMatrix.BID_VOLUME, np.float32),
+    (OrderbookMatrix.BID_NET, np.float32),
+    (OrderbookMatrix.BID_USD_VALUE, np.float32),
+])

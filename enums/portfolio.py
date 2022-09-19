@@ -27,6 +27,6 @@ class PortfolioMatrix:
 
 PORTFOLIO_DTYPE = np.dtype([
     (PortfolioMatrix.INDEX, np.int32),
-    (PortfolioMatrix.VOLUME, np.float32),
-    (PortfolioMatrix.USD_VALUE, np.float32),
+    (PortfolioMatrix.VOLUME, np.float64),
+    (PortfolioMatrix.USD_VALUE, np.float64),
 ])

@@ -18,4 +18,5 @@ class FuturePortfolio(Portfolio):
 
 class PortfolioMatrix:
     INDEX = "index"
+    VOLUME = "volume"
     USD_VALUE = "usd_value"

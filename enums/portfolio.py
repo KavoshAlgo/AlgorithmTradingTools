@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Portfolio:
     TIME = 'time'
     AVAILABLE_VOL = 'available_vol'
@@ -20,3 +23,10 @@ class PortfolioMatrix:
     INDEX = "index"
     VOLUME = "volume"
     USD_VALUE = "usd_value"
+
+
+PORTFOLIO_DTYPE = np.dtype([
+    (PortfolioMatrix.INDEX, np.int32),
+    (PortfolioMatrix.VOLUME, np.float32),
+    (PortfolioMatrix.USD_VALUE, np.float32),
+])

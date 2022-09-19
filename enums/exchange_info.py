@@ -13,9 +13,7 @@ class ExchangeInfo:
     COMMISSION = 'commission'  # COMMISSION FEE OF MARKET
 
     ORDERBOOK_MAPPING = "orderbook_mapping"  # mapping for orderbook matrix indices
-    PORTFOLIO_MAPPING = "portfolio_mapping"  # mapping for portfolio matrix indices
     ORDERBOOK_MATRIX_SHAPE = "orderbook_matrix_shape"  # shape of orderbook matrix
-    PORTFOLIO_MATRIX_SHAPE = "portfolio_matrix_shape"  # shape of portfolio matrix
 
     """ SPECIFIC ENUMS FOR TSETMC STOCK MARKET """
     MARKET_FA = 'market_fa'

@@ -1,3 +1,3 @@
 class RPCEnum:
-    # standard: BROKER_NAME + BROKER_OPERATION_SERVICE + USERNAME
-    BROKER_OPERATION_SERVICE = "_broker_operation_service_"
+    # standard: BROKER_NAME + RPC_MANAGER_SERVICE + USERNAME
+    RPC_MANAGER_SERVICE = "_rpc_manager_service_"

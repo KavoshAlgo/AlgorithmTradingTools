@@ -14,6 +14,9 @@ class RedisEnums:
         Send_Edit_Error = "_send&edit&error_"
         Trade = "_trade_"
 
+    class Queue:
+        OPERATIONS_REQUESTS = "_operation_requests_"  # standard: BROKER_NAME + Queue.OPERATIONS_REQUESTS + USERNAME
+
     class Stream:
         MARKET = "_market_data"  # standard: BROKER_NAME + Stream.MARKET
         USER_DATA = "_broker_user_data_"  # standard: BROKER_NAME + Stream.USER_DATA + USERNAME

@@ -234,7 +234,7 @@ class Redis:
         else:
             return None
 
-    def push_to_queue(self, queue_name, item):
+    def push_to_queue(self, queue_name: str, item: dict) -> None:
         """
         pushing and storing data into redis lists from right.
 
@@ -244,15 +244,15 @@ class Redis:
         """
         self.redis_connection.rpush(queue_name, json.dumps(item))
 
-    def pop_from_queue(self, queue_name):
+    def pop_from_queue(self, queue_name: str, timeout: int = 0) -> dict or None:
         """
         popping and removing data from redis lists from left.
 
-        :param queue_name: name of the queue
-        :return:
+        @param queue_name: name of the queue
+        @param timeout: the amount of time the procedure must wait for incoming data on the queue
+        :return: the data
         """
-        temp = self.redis_connection.lpop(queue_name)
-        if temp is not None:
-            return json.loads(temp)
-        else:
-            return temp
+        temp = self.redis_connection.blpop(queue_name, timeout=timeout)
+        if temp:
+            return json.loads(temp[1])
+        return temp

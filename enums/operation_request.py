@@ -3,6 +3,3 @@ class OperationRequest:
     JOB = "job"
     JOB_ARGS = "job_args"
     TIME = "time"
-    RESPONSE = "response"
-    STATUS = "status"
-    EVENT_TYPE = "event_type"

@@ -6,7 +6,7 @@ class AccountInfo:
     PORTFOLIO_SHM_NAME = "portfolio_shm_name"  # shape of portfolio matrix
     ORDERS_MATRIX_SHAPE = "orders_matrix_shape"  # shape of portfolio matrix
     ORDERS_SHM_NAME = "orders_shm_name"  # shape of portfolio matrix
-    API_TOKEN = ""  # the api token of this account
+    API_TOKEN = "api_token"  # the api token of this account
 
     class CommissionMode:
         MAKER = 'maker'  # COMMISSION FEE OF MAKER TRADES

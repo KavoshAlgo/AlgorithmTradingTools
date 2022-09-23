@@ -4,6 +4,7 @@ class RedisEnums:
         OPEN_ORDERS = "_open_orders_"
         TRADES = "_trades_"
         PORTFOLIO = "_portfolio_"
+        ORDERS_IDS = "_orders_ids_"  # standard: BROKER_NAME + HashSet.ORDERS_IDS + USERNAME
 
     class Set:
         ORDERBOOK = "_orderbook_"

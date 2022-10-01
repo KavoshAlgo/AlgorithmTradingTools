@@ -16,6 +16,8 @@ class Order:
     ORDERBOOKID = 'orderbookid'
     TRADES = "trades"
     ERROR = "error"
+    SRC_ASSET = "src_asset"
+    DES_ASSET = "des_asset"
 
     class OrderStatus:
         ACTIVE = "Active"

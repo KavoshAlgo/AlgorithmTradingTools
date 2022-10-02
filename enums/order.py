@@ -4,7 +4,7 @@ import numpy as np
 class Order:
     INDEX = "index"
     TIME = 'time'
-    ‌BROKER = "broker"
+    BROKER = "broker"
     MARKET = 'market'
     ORDER_ID = 'orderId'
     PRICE = 'price'

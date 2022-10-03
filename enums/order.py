@@ -48,11 +48,11 @@ ORDERS_DTYPE = np.dtype([
     (Order.PRICE, np.float64),
     (Order.VOLUME, np.float64),
     (Order.EXECUTED_QTY, np.float64),
-    (Order.STATUS, "U10"),
+    (Order.STATUS, "U20"),
     (Order.TYPE, "U10"),
     (Order.COM_FEE, np.float64),
     (Order.TIME, np.float64),
-    (Order.ERROR, "U10"),
+    (Order.ERROR, "U20"),
 ])
 
 # mapping from enums to shm matrix index for each row

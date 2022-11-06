@@ -115,8 +115,7 @@ def jtoday_maker(date=None, string_date=False, jcalendar=False, time_zone='Asia/
             return jdatetime.datetime.fromgregorian(datetime=date)
     else:
         if date is None:
-            today = datetime.now(tz=timezone(time_zone))
-            datetime.now(tz=timezone(today)).strftime("%Y-%m-%d_%H-%M-%S")
+            return datetime.now(tz=timezone(time_zone)).strftime("%Y-%m-%d_%H-%M-%S")
         else:
             return jdatetime.datetime.fromgregorian(datetime=date)
 

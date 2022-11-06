@@ -103,15 +103,22 @@ def check_start_programm_time(start_time, finish_time):
                 break
 
 
-def jtoday_maker(date=None, string_date=False, time_zone='Asia/Tehran'):
-    if date is None:
-        today = datetime.now(tz=timezone(time_zone))
-        if string_date:
-            return jdatetime.datetime.fromgregorian(datetime=today).strftime("%Y-%m-%d")
+def jtoday_maker(date=None, string_date=False, jcalendar=False, time_zone='Asia/Tehran'):
+    if jcalendar:
+        if date is None:
+            today = datetime.now(tz=timezone(time_zone))
+            if string_date:
+                return jdatetime.datetime.fromgregorian(datetime=today).strftime("%Y-%m-%d")
+            else:
+                return jdatetime.datetime.fromgregorian(datetime=today).strftime("%Y-%m-%d_%H-%M-%S")
         else:
-            return jdatetime.datetime.fromgregorian(datetime=today).strftime("%Y-%m-%d_%H-%M-%S")
+            return jdatetime.datetime.fromgregorian(datetime=date)
     else:
-        return jdatetime.datetime.fromgregorian(datetime=date)
+        if date is None:
+            today = datetime.now(tz=timezone(time_zone))
+            datetime.now(tz=timezone(today)).strftime("%Y-%m-%d_%H-%M-%S")
+        else:
+            return jdatetime.datetime.fromgregorian(datetime=date)
 
 
 def make_path(main_path, append_paths=None, file_name=None):

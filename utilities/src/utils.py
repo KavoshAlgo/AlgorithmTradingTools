@@ -103,7 +103,7 @@ def check_start_programm_time(start_time, finish_time):
                 break
 
 
-def jtoday_maker(date=None, string_date=False, jcalendar=False, time_zone='Asia/Tehran'):
+def jtoday_maker(date=None, string_date=False, jcalendar=True, time_zone='Asia/Tehran'):
     if jcalendar:
         if date is None:
             today = datetime.now(tz=timezone(time_zone))
